@@ -10,6 +10,7 @@ const colors = [
 ];
 // variety of y axis
 const ylabels = ["Eg", "CBO", "VBO", "CB", "VB", "C2V"];
+const xlabels = ["Lattice constant [A]", "Lattice mismatch [%]"];
 
 // variety of compounds
 const compounds = {
@@ -38,7 +39,9 @@ const setCompoundsData = mode => {
 	return compound_data;
 };
 const [compound_data, binaries_data] = [setCompoundsData(1), setCompoundsData(0)];
-
+Object.keys(binaries_data).map( binary =>{
+	binaries_data[binary][0].p = binaries_data[binary][0].a
+})
 // setting initial max and min of fractions of compounds
 const compounds_fractions = (() => {
 	let compounds_fractions_temp = {};
@@ -59,7 +62,7 @@ const compounds_fractions = (() => {
 })();
 
 // updating indicating data
-const setGraphData = (mode, temp_compounds_checked, fraction) => {
+const setGraphData = (mode, temp_compounds_checked, fraction, base_a) => {
 	let [ temp_raws,temp_compound_raws, temp_binaries_raws, temp_compound_raws_C2V, temp_compound_raws_C2V_temp,directs ] = [ [], [], [], [], [], [] ];
 
 	for(let i in temp_compounds_checked){
@@ -97,6 +100,10 @@ const setGraphData = (mode, temp_compounds_checked, fraction) => {
 		}
 	}
 
+	temp_raws.map(raws =>{
+		raws.p = base_a>0 ? (raws.a-base_a)/base_a : raws.a
+	})
+
 	Object.keys(compounds).map( binary =>
 		(!Object.keys(compounds[binary]).length) &&
 			temp_raws.map( (temp_raw,i) =>
@@ -113,7 +120,7 @@ const setGraphData = (mode, temp_compounds_checked, fraction) => {
 		directs.push(direct, indirect);
 	}
 
-	return [temp_raws, directs,temp_binaries_raws];
+	return [temp_raws, directs, temp_binaries_raws];
 };
 
 /*
@@ -157,4 +164,4 @@ console.log('start');
 postData_wrapper(carr, carr.length, 3000).then(num => console.log(compounds_temp));
 */
 
-export {colors, ylabels, compounds, setCompoundsData, compound_data, binaries_data, compounds_fractions, setGraphData}
+export {colors, xlabels, ylabels, compounds, setCompoundsData, compound_data, binaries_data, compounds_fractions, setGraphData}

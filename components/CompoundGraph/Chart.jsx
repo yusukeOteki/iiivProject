@@ -39,6 +39,7 @@ export default class SimpleScatterChart extends React.Component{
 				<div style={{ backgroundColor: '#fff', border: '1px solid #999', margin: 0, padding: 10 }}>
 				  <p>{x.payload.latex}</p>
 				  <p>{x.name}: {x.payload.a} A</p>
+				  {x.payload.a ===x.payload.p ? '' : <p>Lattice mismatch: {parseInt(x.payload.p*100000, 10)/100000} %</p>}
 				  <p>Eg: {x.payload.Eg} eV</p>
 				  <p>CB: {x.payload.CB} eV</p>
 				  <p>VB: {x.payload.VB} eV</p>
@@ -48,7 +49,7 @@ export default class SimpleScatterChart extends React.Component{
 	}
 
 	render () {
-		const { compound_raws, binaries_data, refAreaLeft, refAreaRight, left, right, bottom, top, ylabel, zoom, _onchangeleft, _onchangeright } = this.props;
+		const { compound_raws, binaries_data, refAreaLeft, refAreaRight, base_a, left, right, bottom, top, xlabel, ylabel, zoom, _onchangeleft, _onchangeright } = this.props;
 		return (
 			<ScatterChart width={1300/2} height={900/2} margin={{top: 20, right: 20, bottom: 20, left: 50}}
 				onClick={ e => this._onchangelineheight(e, this.props)}
@@ -57,8 +58,8 @@ export default class SimpleScatterChart extends React.Component{
 				onMouseUp = { e => zoom( this ) }
 			>
 				<CartesianGrid />
-				<XAxis dataKey={'a'} type="number" domain={[left, right]} name='lattice constant'>
-					<Label value="Lattice constant [A]" position="bottom" />
+				<XAxis dataKey={'p'} type="number" domain={[left, right]} name='lattice constant'>
+					<Label value={`${xlabel}`} position="bottom" />
 				</XAxis>
 				<YAxis dataKey={ylabel} type="number" domain={[bottom, top]} name='energy'>
 					<Label value={`${ylabel} [eV]`} position='left' offset={30} textAnchor='middle' angle={-90} />

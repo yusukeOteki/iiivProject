@@ -117,7 +117,8 @@ const setGraphData = (mode, temp_compounds_checked, fraction, base_a) => {
 		let [direct, indirect] = [ [], [] ];
 		for(let k in temp_compound_raws_temp[j])
 			temp_compound_raws_temp[j][k].direct ? direct.push(temp_compound_raws_temp[j][k]) : indirect.push(temp_compound_raws_temp[j][k]);
-		directs.push(direct, indirect);
+		direct.length && directs.push(direct);
+		indirect.length && directs.push(indirect);
 	}
 
 	return [temp_raws, directs, temp_binaries_raws];

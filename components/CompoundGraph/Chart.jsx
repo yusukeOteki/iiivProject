@@ -23,11 +23,12 @@ export default class SimpleScatterChart extends React.Component{
 		temp_clicks.push(new Date().getTime());
 		this.setState( () => ({clicks:temp_clicks}));
 		let timeout
+		let time = 600
 		clearTimeout(timeout);
-		timeout = setTimeout(() =>
-			(this.state.clicks.length > 1 && this.state.clicks[this.state.clicks.length - 1] - this.state.clicks[this.state.clicks.length - 2] < 250 && e && e.yValue && e.xValue) &&
+		timeout = setTimeout(() =>{
+			(this.state.clicks.length > 1 && this.state.clicks[this.state.clicks.length - 1] - this.state.clicks[this.state.clicks.length - 2] < time && e && e.yValue && e.xValue) &&
 				this.setState({ReferenceLine_y: e.yValue, ReferenceLine_x: e.xValue, clicks:[]})
-		, 250);
+		}, time);
 	}
 
 	// Indicating a tooltip func.

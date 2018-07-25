@@ -63,7 +63,7 @@ const compounds_fractions = (() => {
 
 // updating indicating data
 const setGraphData = (mode, temp_compounds_checked, fraction, base_a) => {
-	let [ temp_raws,temp_compound_raws, temp_binaries_raws, temp_compound_raws_C2V, temp_compound_raws_C2V_temp,directs ] = [ [], [], [], [], [], [] ];
+	let [ temp_raws,temp_compound_raws, temp_binaries_raws, temp_compound_raws_C2V, directs ] = [ [], [], [], [], [], [] ];
 
 	for(let i in temp_compounds_checked){
 		temp_compound_raws[i] = compound_data[temp_compounds_checked[i]].filter(checked_compound => {

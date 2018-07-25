@@ -57,26 +57,28 @@ export default class Root extends React.Component{
 		// xAxis domain
 		if ( refAreaLeft > refAreaRight )
 			[ refAreaLeft, refAreaRight ] = [ refAreaRight, refAreaLeft ];
-		let temp_data = [];
-		for(let i in compound_raws)
-			(refAreaLeft <= compound_raws[i][0].p) && (compound_raws[i][0].p <= refAreaRight) &&
-				temp_data.push( compound_raws[i] );
 		
 		let temp_binaries_data = [];
 		Object.keys(binaries_data).map(binary =>
 			(refAreaLeft <= binaries_data[binary][0].p) && (binaries_data[binary][0].p <= refAreaRight) && (temp_binaries_data[binaries_data[binary][0].latex+binary] = binaries_data[binary])
 		);
+		
+		compound_raws = compound_raws.map(compound_raw => 
+			compound_raw.filter( item => 
+				(refAreaLeft <= item.p) && (item.p <= refAreaRight)
+			)
+		)
 
 		this.setState( () => ({
 			refAreaLeft : '',
 			refAreaRight : '',
 			drag: 0,
-			compound_raws : temp_data,
+			compound_raws : compound_raws,
 			binaries_data : temp_binaries_data,
 			left : parseInt((refAreaLeft-0.01)*10000, 10)/10000,
 			right : parseInt((refAreaRight+0.01)*10000, 10)/10000,
-			bottom:Math.floor(temp_data.length===0?0:parseInt((Math.min.apply(null,temp_data.map( o => o[0][ylabel] ))-0.1)*1000, 10)/1000),
-			top:Math.ceil(temp_data.length===0?0:parseInt((Math.max.apply(null,temp_data.map( o => o[0][ylabel] ))+0.1)*1000, 10)/1000)
+			bottom:Math.floor(compound_raws.length===0?0:parseInt((Math.min.apply(null,compound_raws.map( o => Math.min.apply(null,o.map( p => p[ylabel] )) ))-0.1)*1000, 10)/1000),
+			top:Math.ceil(compound_raws.length===0?0:parseInt((Math.max.apply(null,compound_raws.map( o => Math.max.apply(null,o.map( p => p[ylabel] )) ))+0.1)*1000, 10)/1000)
 		} ) );
 	}
 
@@ -90,8 +92,8 @@ export default class Root extends React.Component{
 			refAreaRight : '',
 			left:parseInt((Math.min.apply(null,Object.keys(compound_raws_out).map( o => compound_raws_out[o][0].p ))-0.01)*1000, 10)/1000,
 			right:parseInt((Math.max.apply(null,Object.keys(compound_raws_out).map( o => compound_raws_out[o][0].p ))+0.01)*1000, 10)/1000,
-			bottom:Math.floor(parseInt((Math.min.apply(null,Object.keys(compound_raws_out).map( o => compound_raws_out[o][0][ylabel] ))-0.1)*1000, 10)/1000),
-			top:Math.ceil(parseInt((Math.max.apply(null,Object.keys(compound_raws_out).map( o => compound_raws_out[o][0][ylabel] ))+0.1)*1000, 10)/1000)
+			bottom:Math.floor(compound_raws_out.length===0?0:parseInt((Math.min.apply(null,compound_raws_out.map( o => Math.min.apply(null,o.map( p => p[ylabel] )) ))-0.1)*1000, 10)/1000),
+			top:Math.ceil(compound_raws_out.length===0?0:parseInt((Math.max.apply(null,compound_raws_out.map( o => Math.max.apply(null,o.map( p => p[ylabel] )) ))+0.1)*1000, 10)/1000)
 		}) );
 	}
 

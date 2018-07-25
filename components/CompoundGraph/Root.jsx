@@ -48,8 +48,8 @@ export default class Root extends React.Component{
 		let { refAreaLeft, refAreaRight, compound_raws, binaries_data, ylabel } = this.state;
 		if ( refAreaLeft === refAreaRight || refAreaRight === '' ) {
 			this.setState( () => ({
-				refAreaLeft : refAreaLeft,
-				refAreaRight : refAreaRight,
+				refAreaLeft : '',
+				refAreaRight : '',
 				drag: 0
 		  }) );
 			return;

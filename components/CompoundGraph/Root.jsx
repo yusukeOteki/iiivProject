@@ -24,10 +24,11 @@ export default class Root extends React.Component{
 			line_hight: 0,
 			refAreaLeft : '',
 			refAreaRight : '',
+			drag: 0,
 			left: parseInt((Math.min.apply(null,Object.keys(binaries_data).map( o => binaries_data[o][0].p ))-0.01)*1000, 10)/1000,
 			right: parseInt((Math.max.apply(null,Object.keys(binaries_data).map( o => binaries_data[o][0].p ))+0.01)*1000, 10)/1000,
-			bottom: parseInt((Math.min.apply(null,Object.keys(binaries_data).map( o => binaries_data[o][0][ylabels[0]] ))-0.1)*1000, 10)/1000,
-			top: parseInt((Math.max.apply(null,Object.keys(binaries_data).map( o => binaries_data[o][0][ylabels[0]] ))+0.1)*1000, 10)/1000,
+			bottom: Math.floor(parseInt((Math.min.apply(null,Object.keys(binaries_data).map( o => binaries_data[o][0][ylabels[0]] ))-0.1)*1000, 10)/1000),
+			top: Math.ceil(parseInt((Math.max.apply(null,Object.keys(binaries_data).map( o => binaries_data[o][0][ylabels[0]] ))+0.1)*1000, 10)/1000),
 		};
 		this._onchange = this._onchange.bind(this);
 		this._onchangeY = this._onchangeY.bind(this);
@@ -46,7 +47,8 @@ export default class Root extends React.Component{
 		if ( refAreaLeft === refAreaRight || refAreaRight === '' ) {
 			this.setState( () => ({
 				refAreaLeft : refAreaLeft,
-				refAreaRight : refAreaRight
+				refAreaRight : refAreaRight,
+				drag: 0
 		  }) );
 			return;
 		}
@@ -65,12 +67,13 @@ export default class Root extends React.Component{
 		this.setState( () => ({
 		  refAreaLeft : refAreaLeft,
 		  refAreaRight : refAreaRight,
+			drag: 0,
 		  compound_raws : temp_data,
 		  binaries_data : temp_binaries_data,
 		  left : parseInt((refAreaLeft-0.01)*10000, 10)/10000,
 		  right : parseInt((refAreaRight+0.01)*10000, 10)/10000,
-		  bottom:temp_data.length===0?0:parseInt((Math.min.apply(null,temp_data[0].map( o => o[ylabel] ))-0.1)*1000, 10)/1000,
-		  top:temp_data.length===0?0:parseInt((Math.max.apply(null,temp_data[0].map( o => o[ylabel] ))+0.1)*1000, 10)/1000
+		  bottom:Math.floor(temp_data.length===0?0:parseInt((Math.min.apply(null,temp_data[0].map( o => o[ylabel] ))-0.1)*1000, 10)/1000),
+		  top:Math.ceil(temp_data.length===0?0:parseInt((Math.max.apply(null,temp_data[0].map( o => o[ylabel] ))+0.1)*1000, 10)/1000)
 		} ) );
 	}
 
@@ -84,14 +87,14 @@ export default class Root extends React.Component{
 		  refAreaRight : '',
 			left:parseInt((Math.min.apply(null,Object.keys(compound_raws_out).map( o => compound_raws_out[o][0].p ))-0.01)*1000, 10)/1000,
 			right:parseInt((Math.max.apply(null,Object.keys(compound_raws_out).map( o => compound_raws_out[o][0].p ))+0.01)*1000, 10)/1000,
-			bottom:parseInt((Math.min.apply(null,Object.keys(compound_raws_out).map( o => compound_raws_out[o][0][ylabel] ))-0.1)*1000, 10)/1000,
-			top:parseInt((Math.max.apply(null,Object.keys(compound_raws_out).map( o => compound_raws_out[o][0][ylabel] ))+0.1)*1000, 10)/1000
+			bottom:Math.floor(parseInt((Math.min.apply(null,Object.keys(compound_raws_out).map( o => compound_raws_out[o][0][ylabel] ))-0.1)*1000, 10)/1000),
+			top:Math.ceil(parseInt((Math.max.apply(null,Object.keys(compound_raws_out).map( o => compound_raws_out[o][0][ylabel] ))+0.1)*1000, 10)/1000)
 		}) );
 	}
 
 	// setting left value of expanding func.
 	_onchangeleft(e){
-		if(e) this.setState({refAreaLeft:e.xValue});
+		if(e) this.setState({refAreaLeft:e.xValue, drag: 1});
 	}
 
 	// setting right value of expanding func.
@@ -114,8 +117,8 @@ export default class Root extends React.Component{
 			binaries_data_out:temp_binaries_raws,
 			left:parseInt((Math.min.apply(null,temp_raws.map( o => o.p ))-0.01)*1000, 10)/1000,
 			right:parseInt((Math.max.apply(null,temp_raws.map( o => o.p ))+0.01)*1000, 10)/1000,
-			bottom:parseInt((Math.min.apply(null,temp_raws.map( o => o[ylabel] ))-0.1)*1000, 10)/1000,
-			top:parseInt((Math.max.apply(null,temp_raws.map( o => o[ylabel] ))+0.1)*1000, 10)/1000
+			bottom:Math.floor(parseInt((Math.min.apply(null,temp_raws.map( o => o[ylabel] ))-0.1)*1000, 10)/1000),
+			top:Math.ceil(parseInt((Math.max.apply(null,temp_raws.map( o => o[ylabel] ))+0.1)*1000, 10)/1000)
 		});
 	}
 
@@ -132,8 +135,8 @@ export default class Root extends React.Component{
 			binaries_data_out:temp_binaries_raws,
 			left:parseInt((Math.min.apply(null,temp_raws.map( o => o.p ))-0.01)*1000, 10)/1000,
 			right:parseInt((Math.max.apply(null,temp_raws.map( o => o.p ))+0.01)*1000, 10)/1000,
-			bottom:parseInt((Math.min.apply(null,temp_raws.map( o => o[e.target.value] ))-0.1)*1000, 10)/1000,
-			top:parseInt((Math.max.apply(null,temp_raws.map( o => o[e.target.value] ))+0.1)*1000, 10)/1000,
+			bottom:Math.floor(parseInt((Math.min.apply(null,temp_raws.map( o => o[e.target.value] ))-0.1)*1000, 10)/1000),
+			top:Math.ceil(parseInt((Math.max.apply(null,temp_raws.map( o => o[e.target.value] ))+0.1)*1000, 10)/1000),
 			ylabel:e.target.value
 		});
 	}
@@ -152,8 +155,8 @@ export default class Root extends React.Component{
 			binaries_data_out: temp_binaries_raws,
 			left: parseInt((Math.min.apply(null,temp_raws.map( o => o.p ))-0.01)*1000, 10)/1000,
 			right: parseInt((Math.max.apply(null,temp_raws.map( o => o.p ))+0.01)*1000, 10)/1000,
-			bottom: parseInt((Math.min.apply(null,temp_raws.map( o => o[ylabel] ))-0.1)*1000, 10)/1000,
-			top: parseInt((Math.max.apply(null,temp_raws.map( o => o[ylabel] ))+0.1)*1000, 10)/1000,
+			bottom: Math.floor(parseInt((Math.min.apply(null,temp_raws.map( o => o[ylabel] ))-0.1)*1000, 10)/1000),
+			top: Math.ceil(parseInt((Math.max.apply(null,temp_raws.map( o => o[ylabel] ))+0.1)*1000, 10)/1000),
 			base_a: temp_base_a,
 			xlabel:e.target.value
 		});
@@ -174,8 +177,8 @@ export default class Root extends React.Component{
 			binaries_data_out: temp_binaries_raws,
 			left: parseInt((Math.min.apply(null,temp_raws.map( o => o.p ))-0.01)*1000, 10)/1000,
 			right: parseInt((Math.max.apply(null,temp_raws.map( o => o.p ))+0.01)*1000, 10)/1000,
-			bottom: parseInt((Math.min.apply(null,temp_raws.map( o => o[ylabel] ))-0.1)*1000, 10)/1000,
-			top: parseInt((Math.max.apply(null,temp_raws.map( o => o[ylabel] ))+0.1)*1000, 10)/1000,
+			bottom: Math.floor(parseInt((Math.min.apply(null,temp_raws.map( o => o[ylabel] ))-0.1)*1000, 10)/1000),
+			top: Math.ceil(parseInt((Math.max.apply(null,temp_raws.map( o => o[ylabel] ))+0.1)*1000, 10)/1000),
 			base_a: temp_base_a,
 			base_a_out: temp_base_a_out
 		});
@@ -203,13 +206,13 @@ export default class Root extends React.Component{
 			compounds_fractions:temp_compounds_fractions,
 			left:parseInt((Math.min.apply(null,temp_raws.map( o => o.p ))-0.01)*1000, 10)/1000,
 			right:parseInt((Math.max.apply(null,temp_raws.map( o => o.p ))+0.01)*1000, 10)/1000,
-			bottom:parseInt((Math.min.apply(null,temp_raws.map( o => o[ylabel] ))-0.1)*1000, 10)/1000,
-			top:parseInt((Math.max.apply(null,temp_raws.map( o => o[ylabel] ))+0.1)*1000, 10)/1000
+			bottom:Math.floor(parseInt((Math.min.apply(null,temp_raws.map( o => o[ylabel] ))-0.1)*1000, 10)/1000),
+			top:Math.ceil(parseInt((Math.max.apply(null,temp_raws.map( o => o[ylabel] ))+0.1)*1000, 10)/1000)
 		});
 	}
 
 	render () {
-		const { compounds, compound_raws, compound_raws_out, compounds_checked, compounds_fractions, binaries_data, xlabel, ylabel, line_hight, refAreaLeft, left, right, bottom, top } = this.state;
+		const { compounds, compound_raws, compound_raws_out, compounds_checked, compounds_fractions, binaries_data, xlabel, ylabel, line_hight, refAreaLeft, refAreaRight, drag, left, right, bottom, top } = this.state;
 		return (
 			<div>
 				<div style={{display: 'flex'}}>
@@ -220,6 +223,8 @@ export default class Root extends React.Component{
 						ylabel={ylabel}
 						line_hight={line_hight}
 						refAreaLeft={refAreaLeft}
+						refAreaRight={refAreaRight}
+						drag={drag}
 						_onchangeleft={this._onchangeleft}
 						_onchangeright={this._onchangeright}
 						zoomOut={this.zoomOut}

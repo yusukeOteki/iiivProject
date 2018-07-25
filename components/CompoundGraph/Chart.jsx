@@ -50,7 +50,7 @@ export default class SimpleScatterChart extends React.Component{
 	}
 
 	render () {
-		const { compound_raws, binaries_data, refAreaLeft, refAreaRight, base_a, left, right, bottom, top, xlabel, ylabel, zoom, _onchangeleft, _onchangeright } = this.props;
+		const { compound_raws, binaries_data, refAreaLeft, refAreaRight, drag, base_a, left, right, bottom, top, xlabel, ylabel, zoom, _onchangeleft, _onchangeright } = this.props;
 		return (
 			<ScatterChart width={1300/2} height={900/2} margin={{top: 20, right: 20, bottom: 20, left: 50}}
 				onClick={ e => this._onchangelineheight(e, this.props)}
@@ -78,8 +78,8 @@ export default class SimpleScatterChart extends React.Component{
 					)
 				})}
 				{
-					(refAreaLeft && refAreaRight) ?
-					(	<ReferenceArea yAxisId="1" x1={refAreaLeft} x2={refAreaRight}  strokeOpacity={0.3} /> ) : null
+					(refAreaLeft && refAreaRight && drag) ?
+					(	<ReferenceArea x1={refAreaLeft} x2={refAreaRight} strokeOpacity={0.3} /> ) : null
 				}
 				<Tooltip cursor={{strokeDasharray: '3 3'}} content={this.renderTooltip} />
 				<ReferenceLine y={this.state.ReferenceLine_y} stroke={this.state.ReferenceLine_y?"black":""} />

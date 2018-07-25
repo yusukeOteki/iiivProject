@@ -18,7 +18,7 @@ export default class SimpleScatterChart extends React.Component{
 	}
 
 	// Indicating a line func.
-	_onchangelineheight(e, props){
+	_onchangelineheight(e){
 		let temp_clicks = this.state.clicks.concat();
 		temp_clicks.push(new Date().getTime());
 		this.setState( () => ({clicks:temp_clicks}));
@@ -50,12 +50,12 @@ export default class SimpleScatterChart extends React.Component{
 	}
 
 	render () {
-		const { compound_raws, binaries_data, refAreaLeft, refAreaRight, drag, base_a, left, right, bottom, top, xlabel, ylabel, zoom, _onchangeleft, _onchangeright } = this.props;
+		const { compound_raws, binaries_data, refAreaLeft, refAreaRight, drag, cursorPosition, left, right, bottom, top, xlabel, ylabel, zoom, _onchangeleft, _onchangeright, _getCursorPosition } = this.props;
 		return (
 			<ScatterChart width={1300/2} height={900/2} margin={{top: 20, right: 20, bottom: 20, left: 50}}
-				onClick={ e => this._onchangelineheight(e, this.props)}
+				onClick={ e => this._onchangelineheight(e)}
 				onMouseDown = { e => _onchangeleft(e) }
-				onMouseMove = { e => {e && refAreaLeft && _onchangeright(e)} }
+				onMouseMove = { e => {e && ( drag ? refAreaLeft && _onchangeright(e) : _getCursorPosition(e) )} }
 				onMouseUp = { e => zoom( this ) }
 			>
 				<CartesianGrid />

@@ -25,6 +25,7 @@ export default class Root extends React.Component{
 			refAreaLeft : '',
 			refAreaRight : '',
 			drag: 0,
+			cursorPosition: {x: 0, y: 0},
 			left: parseInt((Math.min.apply(null,Object.keys(binaries_data).map( o => binaries_data[o][0].p ))-0.01)*1000, 10)/1000,
 			right: parseInt((Math.max.apply(null,Object.keys(binaries_data).map( o => binaries_data[o][0].p ))+0.01)*1000, 10)/1000,
 			bottom: Math.floor(parseInt((Math.min.apply(null,Object.keys(binaries_data).map( o => binaries_data[o][0][ylabels[0]] ))-0.1)*1000, 10)/1000),
@@ -39,6 +40,7 @@ export default class Root extends React.Component{
 		this.zoomOut = this.zoomOut.bind(this);
 		this._onchangeX = this._onchangeX.bind(this);
 		this._onchangeLatticeConstant = this._onchangeLatticeConstant.bind(this);
+		this._getCursorPosition = this._getCursorPosition.bind(this);
 	}
 
 	// Zoom in func.
@@ -57,23 +59,24 @@ export default class Root extends React.Component{
 			[ refAreaLeft, refAreaRight ] = [ refAreaRight, refAreaLeft ];
 		let temp_data = [];
 		for(let i in compound_raws)
-			temp_data.push( compound_raws[i].filter(compound_raw => (refAreaLeft <= compound_raw.p) && (compound_raw.p <= refAreaRight) ) );
-
+			(refAreaLeft <= compound_raws[i][0].p) && (compound_raws[i][0].p <= refAreaRight) &&
+				temp_data.push( compound_raws[i] );
+		
 		let temp_binaries_data = [];
 		Object.keys(binaries_data).map(binary =>
 			(refAreaLeft <= binaries_data[binary][0].p) && (binaries_data[binary][0].p <= refAreaRight) && (temp_binaries_data[binaries_data[binary][0].latex+binary] = binaries_data[binary])
 		);
 
 		this.setState( () => ({
-		  refAreaLeft : refAreaLeft,
-		  refAreaRight : refAreaRight,
+			refAreaLeft : '',
+			refAreaRight : '',
 			drag: 0,
-		  compound_raws : temp_data,
-		  binaries_data : temp_binaries_data,
-		  left : parseInt((refAreaLeft-0.01)*10000, 10)/10000,
-		  right : parseInt((refAreaRight+0.01)*10000, 10)/10000,
-		  bottom:Math.floor(temp_data.length===0?0:parseInt((Math.min.apply(null,temp_data[0].map( o => o[ylabel] ))-0.1)*1000, 10)/1000),
-		  top:Math.ceil(temp_data.length===0?0:parseInt((Math.max.apply(null,temp_data[0].map( o => o[ylabel] ))+0.1)*1000, 10)/1000)
+			compound_raws : temp_data,
+			binaries_data : temp_binaries_data,
+			left : parseInt((refAreaLeft-0.01)*10000, 10)/10000,
+			right : parseInt((refAreaRight+0.01)*10000, 10)/10000,
+			bottom:Math.floor(temp_data.length===0?0:parseInt((Math.min.apply(null,temp_data.map( o => o[0][ylabel] ))-0.1)*1000, 10)/1000),
+			top:Math.ceil(temp_data.length===0?0:parseInt((Math.max.apply(null,temp_data.map( o => o[0][ylabel] ))+0.1)*1000, 10)/1000)
 		} ) );
 	}
 
@@ -81,10 +84,10 @@ export default class Root extends React.Component{
 	zoomOut() {
 		const { compound_raws_out, binaries_data_out, ylabel } = this.state;
 		this.setState( () => ({
-		  compound_raws : compound_raws_out,
-		  binaries_data: binaries_data_out,
-		  refAreaLeft : '',
-		  refAreaRight : '',
+			compound_raws : compound_raws_out,
+			binaries_data: binaries_data_out,
+			refAreaLeft : '',
+			refAreaRight : '',
 			left:parseInt((Math.min.apply(null,Object.keys(compound_raws_out).map( o => compound_raws_out[o][0].p ))-0.01)*1000, 10)/1000,
 			right:parseInt((Math.max.apply(null,Object.keys(compound_raws_out).map( o => compound_raws_out[o][0].p ))+0.01)*1000, 10)/1000,
 			bottom:Math.floor(parseInt((Math.min.apply(null,Object.keys(compound_raws_out).map( o => compound_raws_out[o][0][ylabel] ))-0.1)*1000, 10)/1000),
@@ -211,29 +214,39 @@ export default class Root extends React.Component{
 		});
 	}
 
+	// Indicating a cursor position
+	_getCursorPosition(e) {
+		this.setState({cursorPosition: {x: e.xValue.toFixed(3), y:  e.yValue.toFixed(3)}})
+	}
+
 	render () {
-		const { compounds, compound_raws, compound_raws_out, compounds_checked, compounds_fractions, binaries_data, xlabel, ylabel, line_hight, refAreaLeft, refAreaRight, drag, left, right, bottom, top } = this.state;
+		const { compounds, compound_raws, compounds_checked, compounds_fractions, binaries_data, xlabel, ylabel, line_hight, refAreaLeft, refAreaRight, drag, cursorPosition, left, right, bottom, top } = this.state;
 		return (
 			<div>
 				<div style={{display: 'flex'}}>
-					<Chart
-						compound_raws={compound_raws}
-						binaries_data={binaries_data}
-						xlabel={xlabel}
-						ylabel={ylabel}
-						line_hight={line_hight}
-						refAreaLeft={refAreaLeft}
-						refAreaRight={refAreaRight}
-						drag={drag}
-						_onchangeleft={this._onchangeleft}
-						_onchangeright={this._onchangeright}
-						zoomOut={this.zoomOut}
-						zoom={this.zoom}
-						left={left}
-						right={right}
-						bottom={bottom}
-						top={top}
-					/>
+					<div>
+						<Chart
+							compound_raws={compound_raws}
+							binaries_data={binaries_data}
+							xlabel={xlabel}
+							ylabel={ylabel}
+							line_hight={line_hight}
+							refAreaLeft={refAreaLeft}
+							refAreaRight={refAreaRight}
+							drag={drag}
+							cursorPosition={cursorPosition}
+							_onchangeleft={this._onchangeleft}
+							_onchangeright={this._onchangeright}
+							_getCursorPosition={this._getCursorPosition}
+							zoomOut={this.zoomOut}
+							zoom={this.zoom}
+							left={left}
+							right={right}
+							bottom={bottom}
+							top={top}
+						/>
+						<p style={{textAlign: 'right', width: '100%'}} >x:{cursorPosition.x || '0.000'} y:{cursorPosition.y || '0.000'}</p>
+					</div>
 					<SettingGraph compounds={compounds} compound_data={compound_data} _onchangeX={this._onchangeX} _onchangeY={this._onchangeY} zoomOut={this.zoomOut} _onchangeLatticeConstant={this._onchangeLatticeConstant} xlabels={xlabels} ylabels={ylabels} />
 					<Form _onchange={this._onchange} _onchangeY={this._onchangeY} _onchangefraction={this._onchangefraction} compounds_fractions={compounds_fractions} compounds_checked={compounds_checked} />
 				</div>

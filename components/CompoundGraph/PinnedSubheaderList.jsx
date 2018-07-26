@@ -13,6 +13,7 @@ import 'rc-slider/assets/index.css';
 
 const styles = theme => ({
   root: {
+    margin: '10px',
     width: '100%',
     maxWidth: 400,
     backgroundColor: theme.palette.background.paper,
@@ -26,6 +27,7 @@ const styles = theme => ({
   ul: {
     backgroundColor: 'inherit',
     padding: 8,
+    borderBottom: 'solid 1px #aaa'
   },
 });
 

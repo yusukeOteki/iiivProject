@@ -20,7 +20,7 @@ export default class SimpleScatterChart extends React.Component{
 
 	// Indicating a line func.
 	_onchangelineheight(e){
-		if(this.props.drag == 0){
+		if(this.props.drag == 0 && e){
 			this.setState({ReferenceLine_y: e.yValue, ReferenceLine_x: e.xValue, clicks:[]})
 		}
 		
@@ -32,7 +32,7 @@ export default class SimpleScatterChart extends React.Component{
 		clearTimeout(timeout);
 		timeout = setTimeout(() =>{
 			(this.state.clicks.length > 1 && this.state.clicks[this.state.clicks.length - 1] - this.state.clicks[this.state.clicks.length - 2] < time && e && e.yValue && e.xValue) &&
-				this.setState({ReferenceLine_y: '', ReferenceLine_x: '', clicks:[]})
+				this.setState({ReferenceLine_y: '', ReferenceLine_x: '', drag: 0, clicks:[]})
 		}, time);
 		
 	}

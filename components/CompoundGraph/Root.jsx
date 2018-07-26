@@ -218,7 +218,7 @@ export default class Root extends React.Component{
 
 	// Indicating a cursor position
 	_getCursorPosition(e) {
-		this.setState({cursorPosition: {x: e.xValue.toFixed(3), y:  e.yValue.toFixed(3)}})
+		e && e.xValue && this.setState({cursorPosition: {x: e.xValue.toFixed(3), y:  e.yValue.toFixed(3)}})
 	}
 
 	render () {

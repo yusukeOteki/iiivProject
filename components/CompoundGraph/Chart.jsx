@@ -41,17 +41,17 @@ export default class SimpleScatterChart extends React.Component{
 	renderTooltip(props) {
 		const { active, payload } = props;
 		if (active && payload && payload.length) {
-		  const x = payload[0];
-		  return (
+			const x = payload[0];
+			return (
 				<div style={{ backgroundColor: '#fff', border: '1px solid #999', margin: 0, padding: 10 }}>
-				  <p>{x.payload.latex}</p>
-				  <p>{x.name}: {x.payload.a} A</p>
-				  {x.payload.a ===x.payload.p ? '' : <p>Lattice mismatch: {parseInt(x.payload.p*100000, 10)/100000} %</p>}
-				  <p>Eg: {x.payload.Eg} eV</p>
-				  <p>CB: {x.payload.CB} eV</p>
-				  <p>VB: {x.payload.VB} eV</p>
+					<p>{x.payload.latex}</p>
+					<p>{x.name}: {x.payload.a} A</p>
+					{x.payload.a ===x.payload.p ? '' : <p>Lattice mismatch: {parseInt(x.payload.p*100000, 10)/100000} %</p>}
+					<p>Eg: {x.payload.Eg} eV</p>
+					<p>CB: {x.payload.CB} eV</p>
+					<p>VB: {x.payload.VB} eV</p>
 				</div>
-		  );
+			);
 		}
 	}
 
@@ -63,9 +63,9 @@ export default class SimpleScatterChart extends React.Component{
 		const { compound_raws, binaries_data, refAreaLeft, refAreaRight, drag, cursorPosition, left, right, bottom, top, xlabel, ylabel, zoom, _onchangeleft, _onchangeright, _getCursorPosition } = this.props;
 		return (
 			<ScatterChart width={1300/2} height={900/2} margin={{top: 20, right: 20, bottom: 20, left: 50}}
-				onClick={ e => this._onchangelineheight(e)}
+				onClick={ e => this._onchangelineheight(e) || _getCursorPosition(e)}
 				onMouseDown = { e => _onchangeleft(e) }
-				onMouseMove = { e => {e && ( drag ? refAreaLeft && _onchangeright(e) : _getCursorPosition(e) )} }
+				onMouseMove = { e => {e && ( drag ? refAreaLeft && _onchangeright(e) : '' )} }
 				onMouseUp = { e => zoom( this ) }
 			>
 				<CartesianGrid />

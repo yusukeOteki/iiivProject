@@ -38,13 +38,13 @@
     "eslint-loader": "^2.0.0",
     "eslint-plugin-react": "^7.9.1",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "favicons-webpack-plugin": "0.0.9",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
     "material-ui": "^1.0.0-beta.46",
     "react-router-dom": "^4.3.1",
     "recharts": "^1.0.0-beta.10",
     "webpack": "^4.12.0",
-    "webpack-cli": "^3.0.7",
-    "webpack-dev-server": "^3.1.4"
+    "webpack-cli": "^3.0.7"
   }
 }

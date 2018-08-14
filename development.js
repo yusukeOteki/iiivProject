@@ -30,6 +30,8 @@ export default {
       template: './src/index.html',
       filename: 'index.html',
       inject: 'body',
+			meta: {charset: 'utf-8'},
+			favicon: './src/favicon.png',
     }),
     new webpack.LoaderOptionsPlugin({
       options: {

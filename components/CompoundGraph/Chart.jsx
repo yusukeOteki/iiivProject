@@ -1,5 +1,6 @@
 /*jshint esversion: 6 */
 import React from 'react';
+import isEqual from 'lodash/isEqual';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Label, LabelList, ReferenceLine, ReferenceArea} from 'recharts';
 import {colors, compounds} from './index';
 
@@ -18,6 +19,10 @@ export default class SimpleScatterChart extends React.Component{
 		this._onchangelineheightonMarker = this._onchangelineheightonMarker.bind(this);
 	}
 
+	shouldComponentUpdate(nextProps, nextState) {
+		return !(isEqual(nextProps, this.props) && isEqual(nextState, this.state));
+	}
+	
 	// Indicating a line func.
 	_onchangelineheight(e){
 		if(this.props.drag == 0 && e){
@@ -73,7 +78,7 @@ export default class SimpleScatterChart extends React.Component{
 					<Label value={`${xlabel}`} position="bottom" />
 				</XAxis>
 				<YAxis dataKey={ylabel} type="number" domain={[bottom, top]} name='energy'>
-					<Label value={`${ylabel} [eV]`} position='left' offset={30} textAnchor='middle' angle={-90} />
+					<Label value={`${ylabel} [eV]`} position='left' textAnchor='middle' angle={-90} />
 				</YAxis>
 				<ZAxis range={[50]}/>
 				{Object.keys(compound_raws).map((compound,i)=>{

@@ -1,4 +1,5 @@
 import React from 'react';
+import isEqual from 'lodash/isEqual';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
@@ -31,6 +32,12 @@ class SettingGraph extends React.Component {
     yAxis: 'Eg',
     xAxis: "Lattice constant [A]",
   };
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const propsDiff = isEqual(nextProps, this.props);
+    const stateDiff = isEqual(nextState, this.state);
+    return !stateDiff;
+  }
 
   yChange = event => {
     this.props._onchangeY(event)

@@ -43,16 +43,7 @@ const marks = {
 class PinnedSubheaderList extends React.Component{
   
 	shouldComponentUpdate(nextProps, nextState) {
-		//for(let key in nextProps){
-		//  !isEqual(nextProps[key], this.props[key]) && console.log(key, isEqual(nextProps[key], this.props[key]))
-		//}
-		//console.log(this.props.compounds_checked)
-		const propsDiff = isEqual(nextProps, this.props);
-		const stateDiff = isEqual(nextState, this.state);
-		//console.log("propsDiff", propsDiff)
-		//console.log("stateDiff", stateDiff)
-		//console.log(!(propsDiff && stateDiff))
-		return !(propsDiff && stateDiff);
+		return !(isEqual(nextProps, this.props) && isEqual(nextState, this.state));
 	}
 	
 	render () {
@@ -62,7 +53,7 @@ class PinnedSubheaderList extends React.Component{
       <List className={classes.root} subheader={<li />}>
         {Object.keys(compounds).map((compound, i) => (
           <li key={`section-${compound}`} className={classes.listSection}>
-            <ListCompound i={i} classes={classes} compounds={compounds} compound={compound} compounds_fractions={compounds_fractions} compounds_checked={compounds_checked.indexOf(compound)} _onchange={_onchange} _onchangefraction={_onchangefraction} />
+            <ListCompound i={i} classes={classes} compounds={compounds} compound={compound} compounds_fractions={compounds_fractions[compound]} compounds_checked={compounds_checked.indexOf(compound)} _onchange={_onchange} _onchangefraction={_onchangefraction} />
           </li>
         ))}
       </List>

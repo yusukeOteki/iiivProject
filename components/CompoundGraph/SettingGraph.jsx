@@ -34,9 +34,7 @@ class SettingGraph extends React.Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    const propsDiff = isEqual(nextProps, this.props);
-    const stateDiff = isEqual(nextState, this.state);
-    return !stateDiff;
+		return !(isEqual(nextProps, this.props) && isEqual(nextState, this.state));
   }
 
   yChange = event => {

@@ -193,7 +193,7 @@ export default class Root extends React.Component{
 	_onchangefraction(e, name, axis){
 		const { base_a, ylabel, compounds_checked, compounds_fractions } = this.state;
 		let temp_compounds_checked = compounds_checked.concat();
-		let temp_compounds_fractions = compounds_fractions;
+		let temp_compounds_fractions = JSON.parse(JSON.stringify(compounds_fractions));
 		if(name){
 			temp_compounds_fractions[name][axis+'Min'] = e[0];
 			temp_compounds_fractions[name][axis+'Max'] = e[1];

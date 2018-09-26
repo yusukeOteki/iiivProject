@@ -39,16 +39,7 @@ const marks = {
 class ListCompound extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
-    for (let key in nextProps) {
-      !isEqual(nextProps[key], this.props[key]) && console.log(key, isEqual(nextProps[key], this.props[key]))
-    }
-    //console.log(this.props.compounds_checked)
-    const propsDiff = isEqual(nextProps, this.props);
-    const stateDiff = isEqual(nextState, this.state);
-    //console.log("propsDiff", propsDiff)
-    //console.log("stateDiff", stateDiff)
-    //console.log(!(propsDiff && stateDiff))
-    return !(propsDiff && stateDiff);
+		return !(isEqual(nextProps, this.props) && isEqual(nextState, this.state));
   }
 
   render() {
@@ -63,12 +54,12 @@ class ListCompound extends React.Component {
           </ListItemSecondaryAction>
         </ListSubheader>
         {(() => {
-          if (compounds_fractions[compound].x !== null) {
+          if (compounds_fractions.x !== null) {
             return (
               <ListItem key={`list-${i}-x`}>
-                <input type="number" className={compound} onChange={_onchangefraction} name="xMin" step={compounds_fractions[compound].x} min="0" max="100" value={compounds_fractions[compound].xMin} />
+                <input type="number" className={compound} onChange={_onchangefraction} name="xMin" step={compounds_fractions.x} min="0" max="100" value={compounds_fractions.xMin} />
                 <span>&nbsp;≦&nbsp;{compounds[compound].x}&nbsp;≦&nbsp;</span>
-                <input type="number" className={compound} onChange={_onchangefraction} name="xMax" step={compounds_fractions[compound].x} min="0" max="100" value={compounds_fractions[compound].xMax} />
+                <input type="number" className={compound} onChange={_onchangefraction} name="xMax" step={compounds_fractions.x} min="0" max="100" value={compounds_fractions.xMax} />
                 &nbsp;step
                       <select name='x' className={compound} onChange={_onchangefraction}>
                   <option value="10">10</option>
@@ -79,10 +70,10 @@ class ListCompound extends React.Component {
           }
         })()}
         {(() => {
-          if (compounds_fractions[compound].x !== null) {
+          if (compounds_fractions.x !== null) {
             return (
               <Range key={`list-${i}-rx`}
-                min={0} max={100} value={[compounds_fractions[compound].xMin, compounds_fractions[compound].xMax]} step={compounds_fractions[compound].x}
+                min={0} max={100} value={[compounds_fractions.xMin, compounds_fractions.xMax]} step={compounds_fractions.x}
                 disabled={compounds_checked + 1 ? (false) : (true)}
                 onChange={e => _onchangefraction(e, compound, 'x')}
               />
@@ -90,12 +81,12 @@ class ListCompound extends React.Component {
           }
         })()}
         {(() => {
-          if (compounds_fractions[compound].y !== null) {
+          if (compounds_fractions.y !== null) {
             return (
               <ListItem key={`list-${i}-y`}>
-                <input type="number" className={compound} onChange={_onchangefraction} name="yMin" step={compounds_fractions[compound].y} min="0" max="100" value={compounds_fractions[compound].yMin} />
+                <input type="number" className={compound} onChange={_onchangefraction} name="yMin" step={compounds_fractions.y} min="0" max="100" value={compounds_fractions.yMin} />
                 <span>&nbsp;≦&nbsp;{compounds[compound].y}&nbsp;≦&nbsp;</span>
-                <input type="number" className={compound} onChange={_onchangefraction} name="yMax" step={compounds_fractions[compound].y} min="0" max="100" value={compounds_fractions[compound].yMax} />
+                <input type="number" className={compound} onChange={_onchangefraction} name="yMax" step={compounds_fractions.y} min="0" max="100" value={compounds_fractions.yMax} />
                 &nbsp;step
                       <select name='y' className={compound} onChange={_onchangefraction}>
                   <option value="10">10</option>
@@ -106,10 +97,10 @@ class ListCompound extends React.Component {
           }
         })()}
         {(() => {
-          if (compounds_fractions[compound].y !== null) {
+          if (compounds_fractions.y !== null) {
             return (
               <Range key={`list-${i}-ry`}
-                min={0} max={100} value={[compounds_fractions[compound].yMin, compounds_fractions[compound].yMax]} step={compounds_fractions[compound].y}
+                min={0} max={100} value={[compounds_fractions.yMin, compounds_fractions.yMax]} step={compounds_fractions.y}
                 disabled={compounds_checked + 1 ? (false) : (true)}
                 onChange={e => _onchangefraction(e, compound, 'y')}
               />

@@ -9,14 +9,12 @@ import ListCompound from "./ListCompound";
 
 const styles = theme => ({
   root: {
-    margin: '10px',
-    padding: '10px',
+    height: '100%',
     width: '100%',
-    maxWidth: 400,
     backgroundColor: theme.palette.background.paper,
     position: 'relative',
     overflow: 'auto',
-    maxHeight: 600,
+    maxHeight: 700,
   },
 });
 

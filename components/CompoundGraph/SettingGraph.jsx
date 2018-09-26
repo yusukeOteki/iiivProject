@@ -6,6 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import SettingAxis from './SettingAxis';
 import SettingBaseCompound from './SettingBaseCompound';
 import ContainedButtons from './ContainedButtons';
+import GridPaper from './GridPaper';
 
 const styles = theme => ({
   root: {
@@ -28,7 +29,7 @@ class SettingGraph extends React.Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-		return !(isEqual(nextProps, this.props) && isEqual(nextState, this.state));
+    return !(isEqual(nextProps, this.props) && isEqual(nextState, this.state));
   }
 
   yChange = event => {
@@ -43,11 +44,13 @@ class SettingGraph extends React.Component {
   render(props) {
     const { classes, compounds, compound_data, xlabels, ylabels, zoomOut, _onchangeLatticeConstant, _onchangeX, _onchangeY } = this.props;
     return (
-      <form className={classes.root} autoComplete="off" style={{display: 'flex', flexDirection: 'column'}}>
-        <SettingAxis xlabels={xlabels} ylabels={ylabels} _onchangeX={_onchangeX} _onchangeY={_onchangeY} />
-        <SettingBaseCompound compounds={compounds} compound_data={compound_data} _onchangeLatticeConstant={_onchangeLatticeConstant} />
-        <ContainedButtons zoomOut={zoomOut} />
-      </form>
+      <GridPaper xs={2}>
+        <form className={classes.root} autoComplete="off" style={{ display: 'flex', flexDirection: 'column' }}>
+          <SettingAxis xlabels={xlabels} ylabels={ylabels} _onchangeX={_onchangeX} _onchangeY={_onchangeY} />
+          <SettingBaseCompound compounds={compounds} compound_data={compound_data} _onchangeLatticeConstant={_onchangeLatticeConstant} />
+          <ContainedButtons zoomOut={zoomOut} />
+        </form>
+      </GridPaper >
     );
   }
 }

@@ -18,7 +18,7 @@ const styles = theme => ({
   ul: {
     backgroundColor: 'inherit',
     padding: 8,
-    borderBottom: 'solid 1px #aaa'
+    borderBottom: 'solid 1px #aaa',
   },
 });
 

@@ -44,8 +44,8 @@ class SettingGraph extends React.Component {
   render(props) {
     const { classes, compounds, compound_data, xlabels, ylabels, zoomOut, _onchangeLatticeConstant, _onchangeX, _onchangeY } = this.props;
     return (
-      <GridPaper xs={2}>
-        <form className={classes.root} autoComplete="off" style={{ display: 'flex', flexDirection: 'column' }}>
+      <GridPaper xs={12} className={classes.root}>
+        <form autoComplete="off" style={{ display: 'flex', flexDirection: 'row' }}>
           <SettingAxis xlabels={xlabels} ylabels={ylabels} _onchangeX={_onchangeX} _onchangeY={_onchangeY} />
           <SettingBaseCompound compounds={compounds} compound_data={compound_data} _onchangeLatticeConstant={_onchangeLatticeConstant} />
           <ContainedButtons zoomOut={zoomOut} />

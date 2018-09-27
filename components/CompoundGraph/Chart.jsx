@@ -83,7 +83,7 @@ export default class SimpleScatterChart extends React.Component {
 					</YAxis>
 					<ZAxis range={[50]} />
 					{Object.keys(compound_raws).map((compound, i) => {
-						console.log(compound)
+						//console.log(compound)
 						return (compound_raws[compound].length > 0) ?
 							<Scatter name='compounds_scatter' key={`compound-${i}`} data={compound_raws[compound]} fill={colors[Object.keys(compounds).indexOf(compound_raws[compound][0].compound)]} shape={compound_raws[compound][0].direct ? "circle" : "triangle"} onMouseUp={e => this._onchangelineheightonMarker(e)} /> : ''
 					})}

@@ -122,7 +122,7 @@ class Root extends React.Component {
 
   // Changing the compounds func.
   _onchange(e) {
-    const { base_a, ylabel } = this.state;
+    const { base_a, ylabel, compounds_fractions } = this.state;
     let temp_compounds_checked = this.state.compounds_checked.concat();
     if (e.target.checked) temp_compounds_checked.push(e.target.value);
     else temp_compounds_checked.splice(temp_compounds_checked.indexOf(e.target.value), 1);

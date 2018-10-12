@@ -9,7 +9,7 @@ import GridPaper from './GridPaper';
 
 const styles = theme => ({
   root: {
-	flexGrow: 1,
+    flexGrow: 1,
   },
   chartGrid: {
     margin: theme.spacing.unit * 2,
@@ -98,17 +98,22 @@ class Root extends React.Component {
   // Zoom out func.
   zoomOut() {
     const { compound_raws_out, binaries_data_out, ylabel } = this.state;
+    //let temp_compound_raws = flatten(JSON.parse(JSON.stringify(compound_raws_out)));
+    //console.log(parseInt((Math.min.apply(null, Object.keys(temp_compound_raws).map(o => compound_raws_out[o].p))) * 1000, 10) / 1000)
+    console.log(compound_raws_out)
+    console.log(parseInt((Math.min.apply(null, compound_raws_out.map(o => Math.min.apply(null, o.map(p => p.p)))) - 0.1) * 1000, 10) / 1000)
     this.setState(() => ({
       compound_raws: compound_raws_out,
       binaries_data: binaries_data_out,
       refAreaLeft: '',
       refAreaRight: '',
-      left: parseInt((Math.min.apply(null, Object.keys(compound_raws_out).map(o => compound_raws_out[o][0].p)) - 0.01) * 1000, 10) / 1000,
-      right: parseInt((Math.max.apply(null, Object.keys(compound_raws_out).map(o => compound_raws_out[o][0].p)) + 0.01) * 1000, 10) / 1000,
+      left: parseInt((Math.min.apply(null, compound_raws_out.map(o => Math.min.apply(null, o.map(p => p.p)))) - 0.01) * 1000, 10) / 1000,
+      right: parseInt((Math.max.apply(null, compound_raws_out.map(o => Math.max.apply(null, o.map(p => p.p)))) + 0.01) * 1000, 10) / 1000,
       bottom: Math.floor(compound_raws_out.length === 0 ? 0 : parseInt((Math.min.apply(null, compound_raws_out.map(o => Math.min.apply(null, o.map(p => p[ylabel])))) - 0.1) * 1000, 10) / 1000),
       top: Math.ceil(compound_raws_out.length === 0 ? 0 : parseInt((Math.max.apply(null, compound_raws_out.map(o => Math.max.apply(null, o.map(p => p[ylabel])))) + 0.1) * 1000, 10) / 1000)
     }));
   }
+
 
   // setting left value of expanding func.
   _onchangeleft(e) {
@@ -262,11 +267,11 @@ class Root extends React.Component {
               top={top}
             />
             <p style={{ textAlign: 'right', width: '100%' }} >x:{cursorPosition.x || '0.000'} y:{cursorPosition.y || '0.000'}</p>
-          <SettingGraph compounds={compounds} compound_data={compound_data} _onchangeX={this._onchangeX} _onchangeY={this._onchangeY} zoomOut={this.zoomOut} _onchangeLatticeConstant={this._onchangeLatticeConstant} xlabels={xlabels} ylabels={ylabels} />
-		  </GridPaper>
+            <SettingGraph compounds={compounds} compound_data={compound_data} _onchangeX={this._onchangeX} _onchangeY={this._onchangeY} zoomOut={this.zoomOut} _onchangeLatticeConstant={this._onchangeLatticeConstant} xlabels={xlabels} ylabels={ylabels} />
+          </GridPaper>
         </Grid>
         <Grid container item xs={3}>
-		  <Form style={{height: '100%' }} _onchange={this._onchange} _onchangeY={this._onchangeY} _onchangefraction={this._onchangefraction} compounds_fractions={compounds_fractions} compounds_checked={compounds_checked} />
+          <Form style={{ height: '100%' }} _onchange={this._onchange} _onchangeY={this._onchangeY} _onchangefraction={this._onchangefraction} compounds_fractions={compounds_fractions} compounds_checked={compounds_checked} />
         </Grid>
       </Grid>
     )

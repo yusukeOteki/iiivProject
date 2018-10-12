@@ -30,7 +30,12 @@ class SettingBaseCompound extends React.Component {
     xFraction: 101,
     yFraction: 101,
     latticeConstant: this.props.compound_data['GaAs'][0].a,
-    latex : this.props.compound_data['GaAs'][0].latex
+    latex : this.props.compound_data['GaAs'][0].latex,
+    pre_compound: 'GaAs',
+    pre_xFraction: 101,
+    pre_yFraction: 101,
+    pre_latex: this.props.compound_data['GaAs'][0].a,
+    pre_latticeConstant: this.props.compound_data['GaAs'][0].latex
   };
 
   handleChange = event => {
@@ -38,11 +43,11 @@ class SettingBaseCompound extends React.Component {
     let temp_yFraction = this.props.compounds[event.target.value].y ? 0 : 101
     let BaseCompound = this.setCompound(event.target.value, temp_xFraction, temp_yFraction);
     this.setState({
-      compound: event.target.value,
-      xFraction: temp_xFraction,
-      yFraction: temp_yFraction,
-      latex: BaseCompound.latex,
-      latticeConstant: BaseCompound.a
+      pre_compound: event.target.value,
+      pre_xFraction: temp_xFraction,
+      pre_yFraction: temp_yFraction,
+      pre_latex: BaseCompound.latex,
+      pre_latticeConstant: BaseCompound.a
     });
   };
 
@@ -59,21 +64,21 @@ class SettingBaseCompound extends React.Component {
 
   xChange = event => {
     let temp_xFraction = Number(event.target.value)
-    let BaseCompound = this.setCompound(this.state.compound, temp_xFraction, this.state.yFraction);
+    let BaseCompound = this.setCompound(this.state.pre_compound, temp_xFraction, this.state.pre_yFraction);
     this.setState({
-      xFraction: temp_xFraction,
-      latex: BaseCompound.latex,
-      latticeConstant: BaseCompound.a
+      pre_xFraction: temp_xFraction,
+      pre_latex: BaseCompound.latex,
+      pre_latticeConstant: BaseCompound.a
     });
   };
 
   yChange = event => {
     let temp_yFraction = Number(event.target.value)
-    let BaseCompound = this.setCompound(this.state.compound, this.state.xFraction, temp_yFraction);
+    let BaseCompound = this.setCompound(this.state.pre_compound, this.state.pre_xFraction, temp_yFraction);
     this.setState({
-      yFraction: temp_yFraction,
-      latex: BaseCompound.latex,
-      latticeConstant: BaseCompound.a
+      pre_yFraction: temp_yFraction,
+      pre_latex: BaseCompound.latex,
+      pre_latticeConstant: BaseCompound.a
     });
   };
 
@@ -82,8 +87,26 @@ class SettingBaseCompound extends React.Component {
   };
 
   handleClose = () => {
-    this.props._onchangeLatticeConstant(this.state.latticeConstant)
-    this.setState({ open: false });
+    this.props._onchangeLatticeConstant(this.state.pre_latticeConstant)
+    this.setState({
+      compound: this.state.pre_compound,
+      xFraction: this.state.pre_xFraction,
+      yFraction: this.state.pre_yFraction,
+      latex: this.state.pre_latex,
+      latticeConstant: this.state.pre_latticeConstant,
+      open: false
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      pre_compound: this.state.compound,
+      pre_xFraction: this.state.xFraction,
+      pre_yFraction: this.state.yFraction,
+      pre_latex: this.state.latex,
+      pre_latticeConstant: this.state.latticeConstant,
+      open: false
+    });
   };
 
   render(props) {
@@ -98,7 +121,6 @@ class SettingBaseCompound extends React.Component {
           disableBackdropClick
           disableEscapeKeyDown
           open={this.state.open}
-          onClose={this.handleClose}
         >
           <DialogTitle>Select the Compound</DialogTitle>
           <DialogContent>
@@ -106,7 +128,7 @@ class SettingBaseCompound extends React.Component {
               <FormControl className={classes.formControl}>
                 <InputLabel htmlFor="compound">Compound</InputLabel>
                 <Select
-                  value={this.state.compound}
+                  value={this.state.pre_compound}
                   onChange={this.handleChange}
                   input={<Input id="compound" />}
                 >
@@ -115,11 +137,11 @@ class SettingBaseCompound extends React.Component {
                   )}
                 </Select>
               </FormControl>
-              {this.state.xFraction>100 ? '' :
+              {this.state.pre_xFraction>100 ? '' :
                 <FormControl className={classes.formControl}>
                   <InputLabel htmlFor="xFraction">x fraction</InputLabel>
                   <Select
-                    value={this.state.xFraction}
+                    value={this.state.pre_xFraction}
                     onChange={this.xChange}
                     input={<Input id="xFraction" />}
                   >
@@ -135,11 +157,11 @@ class SettingBaseCompound extends React.Component {
                   </Select>
                 </FormControl>
               }
-              {this.state.yFraction>100 ? '' :
+              {this.state.pre_yFraction>100 ? '' :
                 <FormControl className={classes.formControl}>
                   <InputLabel htmlFor="yFraction">y fraction</InputLabel>
                   <Select
-                    value={this.state.yFraction}
+                    value={this.state.pre_yFraction}
                     onChange={this.yChange}
                     input={<Input id="yFraction" />}
                   >
@@ -158,14 +180,17 @@ class SettingBaseCompound extends React.Component {
             </form>
             <div>
               <div>
-                <p>Compound: {this.state.latex}</p>
-                <p>Lattice Constant: {this.state.latticeConstant} A</p>
+                <p>Compound: {this.state.pre_latex}</p>
+                <p>Lattice Constant: {this.state.pre_latticeConstant} A</p>
               </div>
             </div>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
               Ok
+            </Button>
+            <Button onClick={this.handleCancel} color="primary">
+              Cancel
             </Button>
           </DialogActions>
         </Dialog>

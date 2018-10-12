@@ -124,6 +124,13 @@ const setGraphData = (mode, temp_compounds_checked, fraction, base_a) => {
 	return [temp_raws, directs, temp_binaries_raws];
 };
 
+
+const flatten = function (ary) {
+    return ary.reduce(function (p, c) {
+      return Array.isArray(c) ? p.concat(flatten(c)) : p.concat(c);
+    }, []);
+  };
+
 /*
 import axios from 'axios';
 let carr = Object.entries(compounds).map(([key, value]) => ({'key': key, 'value': value}))

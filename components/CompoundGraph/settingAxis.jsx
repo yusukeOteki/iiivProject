@@ -1,10 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
@@ -43,17 +41,13 @@ class SettingAxis extends React.Component {
         <FormControl key={`ylabel`} className={classes.formControl}>
           <InputLabel htmlFor="yAxis">Y Axis</InputLabel>
           <Select name="band" value={this.state.yAxis} onChange={this.yChange} inputProps={{ name: 'yAxis', id: 'yAxis' }} >
-            {ylabels.map((label,i) =>
-              <MenuItem key={`ylabel-${i}`} value={label}>{label}</MenuItem>
-            )}
+            {ylabels.map((label,i) => <MenuItem key={`ylabel-${i}`} value={label}>{label}</MenuItem> )}
           </Select>
         </FormControl>,
         <FormControl key={`xlabel`} className={classes.formControl}>
           <InputLabel htmlFor="xAxis">X Axis</InputLabel>
           <Select name="band" value={this.state.xAxis} onChange={this.xChange} inputProps={{ name: 'xAxis', id: 'xAxis', }} >
-            {xlabels.map((label,i) =>
-              <MenuItem key={`xlabel-${i}`} value={label}>{label}</MenuItem>
-            )}
+            {xlabels.map((label,i) => <MenuItem key={`xlabel-${i}`} value={label}>{label}</MenuItem> )}
           </Select>
         </FormControl>
     ]);

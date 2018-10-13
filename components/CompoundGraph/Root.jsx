@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { Chart, Form, FilterList, colors, xlabels, ylabels, compounds, compound_data, compounds_fractions, setGraphData } from './index';
+import { Chart, CompoundList, FilterList, xlabels, ylabels, compounds, compound_data, compounds_fractions, applyFilter, setGraphData, getGraphRange } from './index';
 import Grid from '@material-ui/core/Grid';
 import SettingGraph from './SettingGraph'
 import GridPaper from './GridPaper';
@@ -19,7 +19,6 @@ const styles = theme => ({
 
 // Root Tag
 class Root extends React.Component {
-
   constructor(props) {
     super(props);
     let xlabel = xlabels[0];
@@ -35,10 +34,7 @@ class Root extends React.Component {
     let cursorPosition = { x: 0, y: 0 };
     let compound_raws_out = compound_raws;
     let binaries_data_out = binaries_data;
-    let left = parseInt((Math.min.apply(null, temp_raws.map(o => o.p)) - 0.01) * 1000, 10) / 1000;
-    let right = parseInt((Math.max.apply(null, temp_raws.map(o => o.p)) + 0.01) * 1000, 10) / 1000;
-    let bottom = Math.floor(parseInt((Math.min.apply(null, temp_raws.map(o => o[ylabel])) - 0.01) * 1000, 10) / 1000);
-    let top = Math.ceil(parseInt((Math.max.apply(null, temp_raws.map(o => o[ylabel])) + 0.01) * 1000, 10) / 1000);
+    let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
     let filter = {
       a_min: { init: 5, value: 5, on: false }, a_max: { init: 7, value: 7, on: false },
       Eg_min: { init: 0, value: 0, on: false }, Eg_max: { init: 3, value: 3, on: false },
@@ -68,41 +64,21 @@ class Root extends React.Component {
 
   // Zoom in func.
   zoom() {
-    let { refAreaLeft, refAreaRight, compound_raws, binaries_data, ylabel } = this.state;
-    if (refAreaLeft === refAreaRight || refAreaRight === '') {
-      this.setState(() => ({
-        refAreaLeft: '',
-        refAreaRight: '',
-        drag: 0
-      }));
-      return;
+    let { refAreaLeft, refAreaRight, compound_raws, ylabel, left, right, bottom, top } = this.state;
+    let binaries_data = (refAreaLeft === refAreaRight || refAreaRight === '') ? this.state.binaries_data : [];
+    if (!(refAreaLeft === refAreaRight || refAreaRight === '')) {
+      if (refAreaLeft > refAreaRight) [refAreaLeft, refAreaRight] = [refAreaRight, refAreaLeft];
+      this.state.binaries_data.map(binary => (refAreaLeft <= binary.p) && (binary.p <= refAreaRight) && (binaries_data.push(binary)));
+      compound_raws = compound_raws.map(compound_raw => compound_raw.filter(item => (refAreaLeft <= item.p) && (item.p <= refAreaRight) ))
+      left = parseInt((refAreaLeft - 0.01) * 10000, 10) / 10000
+      right = parseInt((refAreaRight + 0.01) * 10000, 10) / 10000
+      bottom = Math.floor(compound_raws.length === 0 ? 0 : parseInt((Math.min.apply(null, compound_raws.map(o => Math.min.apply(null, o.map(p => p[ylabel])))) - 0.01) * 1000, 10) / 1000)
+      top = Math.ceil(compound_raws.length === 0 ? 0 : parseInt((Math.max.apply(null, compound_raws.map(o => Math.max.apply(null, o.map(p => p[ylabel])))) + 0.01) * 1000, 10) / 1000)
     }
-    // xAxis domain
-    if (refAreaLeft > refAreaRight)
-      [refAreaLeft, refAreaRight] = [refAreaRight, refAreaLeft];
-
-    let temp_binaries_data = [];
-    binaries_data.map(binary =>
-      (refAreaLeft <= binary.p) && (binary.p <= refAreaRight) && (temp_binaries_data.push(binary))
-    );
-    
-    compound_raws = compound_raws.map(compound_raw =>
-      compound_raw.filter(item =>
-        (refAreaLeft <= item.p) && (item.p <= refAreaRight)
-      )
-    )
-
-    this.setState(() => ({
-      refAreaLeft: '',
-      refAreaRight: '',
-      drag: 0,
-      compound_raws: compound_raws,
-      binaries_data: temp_binaries_data,
-      left: parseInt((refAreaLeft - 0.01) * 10000, 10) / 10000,
-      right: parseInt((refAreaRight + 0.01) * 10000, 10) / 10000,
-      bottom: Math.floor(compound_raws.length === 0 ? 0 : parseInt((Math.min.apply(null, compound_raws.map(o => Math.min.apply(null, o.map(p => p[ylabel])))) - 0.01) * 1000, 10) / 1000),
-      top: Math.ceil(compound_raws.length === 0 ? 0 : parseInt((Math.max.apply(null, compound_raws.map(o => Math.max.apply(null, o.map(p => p[ylabel])))) + 0.01) * 1000, 10) / 1000)
-    }));
+    refAreaLeft = ''
+    refAreaRight = ''
+    let drag = 0
+    this.setState(() => ({ refAreaLeft, refAreaRight, drag, compound_raws, binaries_data, left, right, bottom, top }));
   }
 
   // Zoom out func.
@@ -123,121 +99,76 @@ class Root extends React.Component {
 
   // setting left value of expanding func.
   _onchangeleft(e) {
-    if (e) this.setState({ refAreaLeft: e.xValue, drag: 1 });
+    e && this.setState({ refAreaLeft: e.xValue, drag: 1 });
   }
 
   // setting right value of expanding func.
   _onchangeright(e) {
-    if (e) this.setState({ refAreaRight: e.xValue });
+    e && this.setState({ refAreaRight: e.xValue });
   }
 
   // Changing the compounds func.
   _onchange(e) {
     const { base_a, ylabel, compounds_fractions } = this.state;
-    let temp_compounds_checked = this.state.compounds_checked.concat();
-    if (e.target.checked) temp_compounds_checked.push(e.target.value);
-    else temp_compounds_checked.splice(temp_compounds_checked.indexOf(e.target.value), 1);
-    let [temp_raws, temp_compound_raws, temp_binaries_raws] = setGraphData(ylabel, temp_compounds_checked, compounds_fractions, base_a);
-
-    this.setState({
-      compound_raws: temp_compound_raws,
-      compound_raws_out: temp_compound_raws,
-      compounds_checked: temp_compounds_checked,
-      binaries_data: temp_binaries_raws,
-      binaries_data_out: temp_binaries_raws,
-      left: parseInt((Math.min.apply(null, temp_raws.map(o => o.p)) - 0.01) * 1000, 10) / 1000,
-      right: parseInt((Math.max.apply(null, temp_raws.map(o => o.p)) + 0.01) * 1000, 10) / 1000,
-      bottom: Math.floor(parseInt((Math.min.apply(null, temp_raws.map(o => o[ylabel])) - 0.01) * 1000, 10) / 1000),
-      top: Math.ceil(parseInt((Math.max.apply(null, temp_raws.map(o => o[ylabel])) + 0.01) * 1000, 10) / 1000)
-    });
+    let compounds_checked = this.state.compounds_checked.concat();
+    (e.target.checked) ? compounds_checked.push(e.target.value) : compounds_checked.splice(compounds_checked.indexOf(e.target.value), 1);
+    let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, compounds_checked, compounds_fractions, base_a);
+    let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
+    let compound_raws_out = compound_raws;
+    let binaries_data_out = binaries_data;
+    this.setState({ compound_raws, compound_raws_out, compounds_checked, binaries_data, binaries_data_out, left, right, bottom, top });
   }
 
   // Changing the y axis func.
   _onchangeY(e) {
-    const { base_a, compounds_checked, compounds_fractions } = this.state;
-    let temp_compounds_checked = compounds_checked.concat();
-    let [temp_raws, temp_compound_raws, temp_binaries_raws] = setGraphData(e.target.value, temp_compounds_checked, compounds_fractions, base_a);
-    this.setState({
-      compound_raws: temp_compound_raws,
-      compound_raws_out: temp_compound_raws,
-      compounds_checked: temp_compounds_checked,
-      binaries_data: temp_binaries_raws,
-      binaries_data_out: temp_binaries_raws,
-      left: parseInt((Math.min.apply(null, temp_raws.map(o => o.p)) - 0.01) * 1000, 10) / 1000,
-      right: parseInt((Math.max.apply(null, temp_raws.map(o => o.p)) + 0.01) * 1000, 10) / 1000,
-      bottom: Math.floor(parseInt((Math.min.apply(null, temp_raws.map(o => o[e.target.value])) - 0.01) * 1000, 10) / 1000),
-      top: Math.ceil(parseInt((Math.max.apply(null, temp_raws.map(o => o[e.target.value])) + 0.01) * 1000, 10) / 1000),
-      ylabel: e.target.value
-    });
+    const { base_a, compounds_fractions } = this.state;
+    let compounds_checked = this.state.compounds_checked.concat();
+    let ylabel = e.target.value;
+    let [temp_raws, compound_raws, binaries_data] = setGraphData(e.target.value, compounds_checked, compounds_fractions, base_a);
+    let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
+    let compound_raws_out = compound_raws;
+    let binaries_data_out = binaries_data;
+    this.setState({ compound_raws, compound_raws_out, compounds_checked, binaries_data, binaries_data_out, left, right, bottom, top, ylabel });
   }
 
   // Changing the x axis func.
   _onchangeX(e) {
-    const { base_a_out, ylabel, compounds_checked, compounds_fractions } = this.state;
-    let temp_compounds_checked = compounds_checked.concat();
-    let temp_base_a = e.target.value === 'Lattice mismatch [%]' ? base_a_out : 0
-    let [temp_raws, temp_compound_raws, temp_binaries_raws] = setGraphData(ylabel, temp_compounds_checked, compounds_fractions, temp_base_a);
-    this.setState({
-      compound_raws: temp_compound_raws,
-      compound_raws_out: temp_compound_raws,
-      compounds_checked: temp_compounds_checked,
-      binaries_data: temp_binaries_raws,
-      binaries_data_out: temp_binaries_raws,
-      left: parseInt((Math.min.apply(null, temp_raws.map(o => o.p)) - 0.01) * 1000, 10) / 1000,
-      right: parseInt((Math.max.apply(null, temp_raws.map(o => o.p)) + 0.01) * 1000, 10) / 1000,
-      bottom: Math.floor(parseInt((Math.min.apply(null, temp_raws.map(o => o[ylabel])) - 0.01) * 1000, 10) / 1000),
-      top: Math.ceil(parseInt((Math.max.apply(null, temp_raws.map(o => o[ylabel])) + 0.01) * 1000, 10) / 1000),
-      base_a: temp_base_a,
-      xlabel: e.target.value
-    });
+    const { ylabel, compounds_fractions } = this.state;
+    let compounds_checked = this.state.compounds_checked.concat();
+    let base_a = e.target.value === 'Lattice mismatch [%]' ? this.state.base_a_out : 0;
+    let xlabel = e.target.value;
+    let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, compounds_checked, compounds_fractions, base_a);
+    let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
+    let compound_raws_out = compound_raws;
+    let binaries_data_out = binaries_data;
+    this.setState({ compound_raws, compound_raws_out, compounds_checked, binaries_data, binaries_data_out, left, right, bottom, top, base_a, xlabel });
   }
 
   // Changing the lattice constant.
   _onchangeLatticeConstant(a) {
-    const { base_a, xlabel, ylabel, compounds_checked, compounds_fractions } = this.state;
-    let temp_compounds_checked = compounds_checked.concat();
-    let temp_base_a_out = a
-    let temp_base_a = xlabel === 'Lattice mismatch [%]' ? temp_base_a_out : 0
-    let [temp_raws, temp_compound_raws, temp_binaries_raws] = setGraphData(ylabel, temp_compounds_checked, compounds_fractions, temp_base_a);
-    this.setState({
-      compound_raws: temp_compound_raws,
-      compound_raws_out: temp_compound_raws,
-      compounds_checked: temp_compounds_checked,
-      binaries_data: temp_binaries_raws,
-      binaries_data_out: temp_binaries_raws,
-      left: parseInt((Math.min.apply(null, temp_raws.map(o => o.p)) - 0.01) * 1000, 10) / 1000,
-      right: parseInt((Math.max.apply(null, temp_raws.map(o => o.p)) + 0.01) * 1000, 10) / 1000,
-      bottom: Math.floor(parseInt((Math.min.apply(null, temp_raws.map(o => o[ylabel])) - 0.01) * 1000, 10) / 1000),
-      top: Math.ceil(parseInt((Math.max.apply(null, temp_raws.map(o => o[ylabel])) + 0.01) * 1000, 10) / 1000),
-      base_a: temp_base_a,
-      base_a_out: temp_base_a_out
-    });
+    const { xlabel, ylabel, compounds_fractions } = this.state;
+    let compounds_checked = this.state.compounds_checked.concat();
+    let base_a_out = a
+    let base_a = xlabel === 'Lattice mismatch [%]' ? base_a_out : 0
+    let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, compounds_checked, compounds_fractions, base_a);
+    let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
+    let compound_raws_out = compound_raws;
+    let binaries_data_out = binaries_data;
+    this.setState({ compound_raws, compound_raws_out, compounds_checked, binaries_data, binaries_data_out, left, right, bottom, top, base_a, base_a_out });
   }
 
   // Changing the fraction of compounds
   _onchangefraction(e, name, axis) {
-    const { base_a, ylabel, compounds_checked, compounds_fractions } = this.state;
-    let temp_compounds_checked = compounds_checked.concat();
-    let temp_compounds_fractions = JSON.parse(JSON.stringify(compounds_fractions));
-    if (name) {
-      temp_compounds_fractions[name][axis + 'Min'] = e[0];
-      temp_compounds_fractions[name][axis + 'Max'] = e[1];
-    } else {
-      temp_compounds_fractions[e.target.className][e.target.name] = Number(e.target.value);
-    }
-    let [temp_raws, temp_compound_raws, temp_binaries_raws] = setGraphData(ylabel, temp_compounds_checked, temp_compounds_fractions, base_a);
-    this.setState({
-      compound_raws: temp_compound_raws,
-      compound_raws_out: temp_compound_raws,
-      compounds_checked: temp_compounds_checked,
-      binaries_data: temp_binaries_raws,
-      binaries_data_out: temp_binaries_raws,
-      compounds_fractions: temp_compounds_fractions,
-      left: parseInt((Math.min.apply(null, temp_raws.map(o => o.p)) - 0.01) * 1000, 10) / 1000,
-      right: parseInt((Math.max.apply(null, temp_raws.map(o => o.p)) + 0.01) * 1000, 10) / 1000,
-      bottom: Math.floor(parseInt((Math.min.apply(null, temp_raws.map(o => o[ylabel])) - 0.01) * 1000, 10) / 1000),
-      top: Math.ceil(parseInt((Math.max.apply(null, temp_raws.map(o => o[ylabel])) + 0.01) * 1000, 10) / 1000)
-    });
+    const { base_a, ylabel } = this.state;
+    let compounds_checked = this.state.compounds_checked.concat();
+    let compounds_fractions = JSON.parse(JSON.stringify(this.state.compounds_fractions));
+    if (name) [ compounds_fractions[name][axis + 'Min'], compounds_fractions[name][axis + 'Max'] ] = [ e[0], e[1] ];
+    else compounds_fractions[e.target.className][e.target.name] = Number(e.target.value);
+    let [temp_raws, compound_raws, binaries_data] = setGraphData(ylabel, compounds_checked, compounds_fractions, base_a);
+    let [left, right, bottom, top] = getGraphRange(temp_raws, 'p', ylabel);
+    let compound_raws_out = compound_raws;
+    let binaries_data_out = binaries_data;
+    this.setState({ compound_raws, compound_raws_out, compounds_checked, binaries_data, binaries_data_out, compounds_fractions, left, right, bottom: bottom, top });
   }
 
   // Indicating a cursor position
@@ -247,55 +178,40 @@ class Root extends React.Component {
 
 
   _onChamgeFilter(e, type) {
-    let tempFilter = JSON.parse(JSON.stringify(this.state.filter));
+    let filter = JSON.parse(JSON.stringify(this.state.filter));
     if (type === 'a_on') {
-      tempFilter.a_min.on = !tempFilter.a_min.on;
-      tempFilter.a_max.on = !tempFilter.a_max.on;
+      filter.a_min.on = !filter.a_min.on;
+      filter.a_max.on = !filter.a_max.on;
     } else if (type === 'Eg_on') {
-      tempFilter.Eg_min.on = !tempFilter.Eg_min.on;
-      tempFilter.Eg_max.on = !tempFilter.Eg_max.on;
+      filter.Eg_min.on = !filter.Eg_min.on;
+      filter.Eg_max.on = !filter.Eg_max.on;
     } else if (type === 'CB_on') {
-      tempFilter.CB_min.on = !tempFilter.CB_min.on;
-      tempFilter.CB_max.on = !tempFilter.CB_max.on;
+      filter.CB_min.on = !filter.CB_min.on;
+      filter.CB_max.on = !filter.CB_max.on;
     } else if (type === 'VB_on') {
-      tempFilter.VB_min.on = !tempFilter.VB_min.on;
-      tempFilter.VB_max.on = !tempFilter.VB_max.on;
+      filter.VB_min.on = !filter.VB_min.on;
+      filter.VB_max.on = !filter.VB_max.on;
     } else if (type === 'direct') {
-      tempFilter.direct_only.on = !tempFilter.direct_only.on;
+      filter.direct_only.on = !filter.direct_only.on;
     } else if (type === 'indirect') {
-      tempFilter.indirect_only.on = !tempFilter.indirect_only.on;
+      filter.indirect_only.on = !filter.indirect_only.on;
     } else {
-      tempFilter[type].value = e.target.value ? Number(e.target.value) : tempFilter[type].init;
+      filter[type].value = e.target.value ? Number(e.target.value) : filter[type].init;
     }
-    this.setState({ filter: tempFilter });
+    this.setState({ filter });
   }
 
   render() {
-    const { compounds, compound_raws, compounds_checked, compounds_fractions, binaries_data, xlabel, ylabel, line_hight, refAreaLeft, refAreaRight, drag, cursorPosition, left, right, bottom, top, filter } = this.state;
+    const { compounds, compounds_checked, compounds_fractions, xlabel, ylabel, line_hight, refAreaLeft, refAreaRight, drag, cursorPosition, left, right, bottom, top, filter } = this.state;
     const { classes } = this.props;
-    let temp_compound_raws = JSON.parse(JSON.stringify(compound_raws)).map(list => list.filter(item =>
-      (filter.a_min.on ? (filter.a_min.value <= item.a && item.a <= filter.a_max.value) : true) &&
-      (filter.Eg_min.on ? (filter.Eg_min.value <= item.Eg && item.Eg <= filter.Eg_max.value) : true) &&
-      (filter.CB_min.on ? (filter.CB_min.value <= item.CB && item.CB <= filter.CB_max.value) : true) &&
-      (filter.VB_min.on ? (filter.VB_min.value <= item.VB && item.VB <= filter.VB_max.value) : true) &&
-      (filter.direct_only.on ? (item.direct === 1) : true) &&
-      (filter.indirect_only.on ? (item.direct === 0) : true)
-    ));
-    let temp_binaries_data = JSON.parse(JSON.stringify(binaries_data)).filter(list =>
-      (filter.a_min.on ? (filter.a_min.value <= list.a && list.a <= filter.a_max.value) : true) &&
-      (filter.Eg_min.on ? (filter.Eg_min.value <= list.Eg && list.Eg <= filter.Eg_max.value) : true) &&
-      (filter.CB_min.on ? (filter.CB_min.value <= list.CB && list.CB <= filter.CB_max.value) : true) &&
-      (filter.VB_min.on ? (filter.VB_min.value <= list.VB && list.VB <= filter.VB_max.value) : true) &&
-      (filter.direct_only.on ? (list.direct === 1) : true) &&
-      (filter.indirect_only.on ? (list.direct === 0) : true)
-    );
+    const [compound_raws, binaries_data] = applyFilter(this.state.compound_raws, this.state.binaries_data, filter);
     return (
       <Grid container className={classes.root} >
         <Grid container item xs={6}>
           <GridPaper xs={12}>
             <Chart
-              compound_raws={temp_compound_raws}
-              binaries_data={temp_binaries_data}
+              compound_raws={compound_raws}
+              binaries_data={binaries_data}
               xlabel={xlabel}
               ylabel={ylabel}
               line_hight={line_hight}
@@ -318,7 +234,7 @@ class Root extends React.Component {
           </GridPaper>
         </Grid>
         <Grid container item xs={3}>
-          <Form style={{ height: '100%' }} _onchange={this._onchange} _onchangeY={this._onchangeY} _onchangefraction={this._onchangefraction} compounds_fractions={compounds_fractions} compounds_checked={compounds_checked} />
+          <CompoundList style={{ height: '100%' }} _onchange={this._onchange} _onchangeY={this._onchangeY} _onchangefraction={this._onchangefraction} compounds_fractions={compounds_fractions} compounds_checked={compounds_checked} />
         </Grid>
         <Grid container item xs={3}>
           <FilterList style={{ height: '100%' }} filter={filter} onChamgeFilter={this._onChamgeFilter} />

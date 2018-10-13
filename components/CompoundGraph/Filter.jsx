@@ -3,14 +3,11 @@ import isEqual from 'lodash/isEqual';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Switch from '@material-ui/core/Switch';
 import 'rc-slider/assets/index.css';
-
-import ListCompound from "./ListCompound";
 
 const styles = theme => ({
   root: {
@@ -33,9 +30,9 @@ const styles = theme => ({
 
 class Filter extends React.Component {
 
-  //shouldComponentUpdate(nextProps, nextState) {
-  //  return !(isEqual(nextProps, this.props) && isEqual(nextState, this.state));
-  //}
+  shouldComponentUpdate(nextProps, nextState) {
+    return !(isEqual(nextProps, this.props) && isEqual(nextState, this.state));
+  }
 
   render() {
     const { classes, filter, onChamgeFilter } = this.props;

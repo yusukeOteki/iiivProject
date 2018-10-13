@@ -12,7 +12,7 @@ const styles = theme => ({
   },
 });
 
-function ContainedButtons(props) {
+function ZoomOutButton(props) {
   const { classes, zoomOut } = props;
   return (
     <div>
@@ -23,8 +23,8 @@ function ContainedButtons(props) {
   );
 }
 
-ContainedButtons.propTypes = {
+ZoomOutButton.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ContainedButtons);
+export default withStyles(styles)(ZoomOutButton);

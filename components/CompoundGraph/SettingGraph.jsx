@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import SettingAxis from './SettingAxis';
 import SettingBaseCompound from './SettingBaseCompound';
-import ContainedButtons from './ContainedButtons';
+import ZoomOutButton from './ZoomOutButton';
 import GridPaper from './GridPaper';
 
 const styles = theme => ({
@@ -48,7 +48,7 @@ class SettingGraph extends React.Component {
         <form autoComplete="off" style={{ display: 'flex', flexDirection: 'row' }}>
           <SettingAxis xlabels={xlabels} ylabels={ylabels} _onchangeX={_onchangeX} _onchangeY={_onchangeY} />
           <SettingBaseCompound compounds={compounds} compound_data={compound_data} _onchangeLatticeConstant={_onchangeLatticeConstant} />
-          <ContainedButtons zoomOut={zoomOut} />
+          <ZoomOutButton zoomOut={zoomOut} />
         </form>
       </GridPaper >
     );

@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { Chart, Form, FilterList, colors, xlabels, ylabels, compounds, setCompoundsData, compound_data, binaries_data, compounds_fractions, setGraphData } from './index';
+import { Chart, Form, FilterList, colors, xlabels, ylabels, compounds, compound_data, compounds_fractions, setGraphData } from './index';
 import Grid from '@material-ui/core/Grid';
 import SettingGraph from './SettingGraph'
 import GridPaper from './GridPaper';
@@ -108,10 +108,6 @@ class Root extends React.Component {
   // Zoom out func.
   zoomOut() {
     const { compound_raws_out, binaries_data_out, ylabel } = this.state;
-    //let temp_compound_raws = flatten(JSON.parse(JSON.stringify(compound_raws_out)));
-    //console.log(parseInt((Math.min.apply(null, Object.keys(temp_compound_raws).map(o => compound_raws_out[o].p))) * 1000, 10) / 1000)
-    console.log(compound_raws_out)
-    console.log(parseInt((Math.min.apply(null, compound_raws_out.map(o => Math.min.apply(null, o.map(p => p.p)))) - 0.1) * 1000, 10) / 1000)
     this.setState(() => ({
       compound_raws: compound_raws_out,
       binaries_data: binaries_data_out,

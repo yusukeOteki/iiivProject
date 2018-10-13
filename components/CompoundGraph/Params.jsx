@@ -14,48 +14,45 @@ const xlabels = ["Lattice constant [A]", "Lattice mismatch [%]"];
 
 // variety of compounds
 const compounds = {
-	"AlGaAsSb":{"x":"Al","y":"As"}, "AlInAsSb":{"x":"Al","y":"As"}, "GaInAsSb":{"x":"Ga","y":"As"},
-	"AlGaInAs":{"x":"Al","y":"Ga"},"AlGaInSb":{"x":"Al","y":"Ga"},
-	"AlPAsSb":{"x":"P","y":"As"}, "GaPAsSb":{"x":"P","y":"As"}, "InPAsSb":{"x":"P","y":"As"},
-	"AlGaPSb":{"x":"Al","y":"P"}, "AlInPSb":{"x":"Al","y":"P"}, "GaInPSb":{"x":"Ga","y":"P"},
-	"AlGaPAs":{"x":"Al","y":"P"}, "AlInPAs":{"x":"Al","y":"P"}, "GaInPAs":{"x":"Ga","y":"P"},
-	"AlGaInP":{"x":"Al","y":"Ga"},
-	"AlGaAs":{"x":"Al"}, "AlInAs":{"x":"Al"}, "GaInAs":{"x":"Ga"},
-	"AlGaSb":{"x":"Al"}, "AlInSb":{"x":"Al"}, "GaInSb":{"x":"Ga"},
-	"AlAsSb":{"x":"As"}, "GaAsSb":{"x":"As"}, "InAsSb":{"x":"As"},
-	"AlGaP":{"x":"Al"}, "AlInP":{"x":"Al"}, "GaInP":{"x":"Ga"},
-	"AlPSb":{"x":"P"}, "GaPSb":{"x":"P"}, "InPSb":{"x":"P"},
-	"AlPAs":{"x":"P"}, "GaPAs":{"x":"P"}, "InPAs":{"x":"P"},
-	"GaAs":{}, "InAs":{}, "AlAs":{},
-	"GaSb":{}, "InSb":{}, "AlSb":{},
-	"InP":{}, "GaP":{}, "AlP":{},
+	"AlGaAsSb": { "x": "Al", "y": "As" }, "AlInAsSb": { "x": "Al", "y": "As" }, "GaInAsSb": { "x": "Ga", "y": "As" },
+	"AlGaInAs": { "x": "Al", "y": "Ga" }, "AlGaInSb": { "x": "Al", "y": "Ga" },
+	"AlPAsSb": { "x": "P", "y": "As" }, "GaPAsSb": { "x": "P", "y": "As" }, "InPAsSb": { "x": "P", "y": "As" },
+	"AlGaPSb": { "x": "Al", "y": "P" }, "AlInPSb": { "x": "Al", "y": "P" }, "GaInPSb": { "x": "Ga", "y": "P" },
+	"AlGaPAs": { "x": "Al", "y": "P" }, "AlInPAs": { "x": "Al", "y": "P" }, "GaInPAs": { "x": "Ga", "y": "P" },
+	"AlGaInP": { "x": "Al", "y": "Ga" },
+	"AlGaAs": { "x": "Al" }, "AlInAs": { "x": "Al" }, "GaInAs": { "x": "Ga" },
+	"AlGaSb": { "x": "Al" }, "AlInSb": { "x": "Al" }, "GaInSb": { "x": "Ga" },
+	"AlAsSb": { "x": "As" }, "GaAsSb": { "x": "As" }, "InAsSb": { "x": "As" },
+	"AlGaP": { "x": "Al" }, "AlInP": { "x": "Al" }, "GaInP": { "x": "Ga" },
+	"AlPSb": { "x": "P" }, "GaPSb": { "x": "P" }, "InPSb": { "x": "P" },
+	"AlPAs": { "x": "P" }, "GaPAs": { "x": "P" }, "InPAs": { "x": "P" },
+	"GaAs": {}, "InAs": {}, "AlAs": {},
+	"GaSb": {}, "InSb": {}, "AlSb": {},
+	"InP": {}, "GaP": {}, "AlP": {},
 };
 
 
 // setting initial raws of compounds fun.
-const setCompoundsData = mode => {
+const compound_data = (() => {
 	let compound_data = {};
-	for(let compound in compounds) (mode || (!Object.keys(compounds[compound]).length)) && (compound_data[compound] = require('../compounds/'+compound+'.json'));
+	for (let compound in compounds) (compound_data[compound] = require('../compounds/' + compound + '.json'));
 	return compound_data;
-};
-const [compound_data, binaries_data] = [setCompoundsData(1), setCompoundsData(0)];
-Object.keys(binaries_data).map( binary =>{
-	binaries_data[binary][0].p = binaries_data[binary][0].a
-})
+})();
+
 // setting initial max and min of fractions of compounds
 const compounds_fractions = (() => {
 	let compounds_fractions_temp = {};
-	for(let key in compound_data){
+	for (let key in compound_data) {
 		compounds_fractions_temp[key] = {
-			'x':(compound_data[key][0].x===null)?null:10,
-			'xMin':(compound_data[key][0].x===null)?null:0,
-			'xMax':(compound_data[key][0].x===null)?null:100,
-			'y':(compound_data[key][0].y===null)?null:10,
-			'yMin':(compound_data[key][0].y===null)?null:0,
-			'yMax':(compound_data[key][0].y===null)?null:100,
-			'z':(compound_data[key][0].z===null)?null:10,
-			'zMin':(compound_data[key][0].z===null)?null:0,
-			'zMax':(compound_data[key][0].z===null)?null:100
+			'x': (compound_data[key][0].x === null) ? null : 10,
+			'xMin': (compound_data[key][0].x === null) ? null : 0,
+			'xMax': (compound_data[key][0].x === null) ? null : 100,
+			'y': (compound_data[key][0].y === null) ? null : 10,
+			'yMin': (compound_data[key][0].y === null) ? null : 0,
+			'yMax': (compound_data[key][0].y === null) ? null : 100,
+			'z': (compound_data[key][0].z === null) ? null : 10,
+			'zMin': (compound_data[key][0].z === null) ? null : 0,
+			'zMax': (compound_data[key][0].z === null) ? null : 100
 		};
 	}
 	return compounds_fractions_temp;
@@ -63,59 +60,59 @@ const compounds_fractions = (() => {
 
 // updating indicating data
 const setGraphData = (mode, temp_compounds_checked, fraction, base_a) => {
-	let [ temp_raws,temp_compound_raws, temp_binaries_raws, temp_compound_raws_C2V, directs ] = [ [], [], [], [], [], [] ];
+	let [temp_raws, temp_compound_raws, temp_binaries_raws, temp_compound_raws_C2V, directs] = [[], [], [], [], [], []];
 
-	for(let i in temp_compounds_checked){
+	for (let i in temp_compounds_checked) {
 		temp_compound_raws[i] = compound_data[temp_compounds_checked[i]].filter(checked_compound => {
-			if(checked_compound.x===null)
+			if (checked_compound.x === null)
 				return checked_compound;
-			else if((checked_compound.y===null) &&
-			(parseInt(checked_compound.x, 10)%parseInt(fraction[checked_compound.compound].x, 10)===0) &&
-			((fraction[checked_compound.compound].xMin<=checked_compound.x) &&
-			(checked_compound.x<=fraction[checked_compound.compound].xMax)))
+			else if ((checked_compound.y === null) &&
+				(parseInt(checked_compound.x, 10) % parseInt(fraction[checked_compound.compound].x, 10) === 0) &&
+				((fraction[checked_compound.compound].xMin <= checked_compound.x) &&
+					(checked_compound.x <= fraction[checked_compound.compound].xMax)))
 				return checked_compound;
-			else if((parseInt(checked_compound.x, 10)%parseInt(fraction[checked_compound.compound].x, 10)===0) &&
-			(parseInt(checked_compound.y, 10)%parseInt(fraction[checked_compound.compound].y, 10)===0) &&
-			((fraction[checked_compound.compound].xMin<=checked_compound.x) &&
-			(checked_compound.x<=fraction[checked_compound.compound].xMax)) &&
-			((fraction[checked_compound.compound].yMin<=checked_compound.y) &&
-			(checked_compound.y<=fraction[checked_compound.compound].yMax)))
+			else if ((parseInt(checked_compound.x, 10) % parseInt(fraction[checked_compound.compound].x, 10) === 0) &&
+				(parseInt(checked_compound.y, 10) % parseInt(fraction[checked_compound.compound].y, 10) === 0) &&
+				((fraction[checked_compound.compound].xMin <= checked_compound.x) &&
+					(checked_compound.x <= fraction[checked_compound.compound].xMax)) &&
+				((fraction[checked_compound.compound].yMin <= checked_compound.y) &&
+					(checked_compound.y <= fraction[checked_compound.compound].yMax)))
 				return checked_compound;
 			else
 				return '';
 		});
 
-		if(mode === 'C2V'){
+		if (mode === 'C2V') {
 			let temp_compound_raws_C2V_temp = [];
-			for(let j in temp_compound_raws[i]){
-				let [temp_C2V_CB, temp_C2V_VB]  = [JSON.parse(JSON.stringify(temp_compound_raws[i][j])), JSON.parse(JSON.stringify(temp_compound_raws[i][j]))];
+			for (let j in temp_compound_raws[i]) {
+				let [temp_C2V_CB, temp_C2V_VB] = [JSON.parse(JSON.stringify(temp_compound_raws[i][j])), JSON.parse(JSON.stringify(temp_compound_raws[i][j]))];
 				[temp_C2V_CB.C2V, temp_C2V_VB.C2V] = [temp_C2V_CB.CB, temp_C2V_VB.VB];
 				temp_compound_raws_C2V_temp.push(temp_C2V_CB, temp_C2V_VB);
 				temp_raws.push(temp_C2V_CB, temp_C2V_VB);
 			}
 			temp_compound_raws_C2V.push(temp_compound_raws_C2V_temp);
-		}else{
-			for(let j in temp_compound_raws[i])
+		} else {
+			for (let j in temp_compound_raws[i])
 				temp_raws.push(temp_compound_raws[i][j]);
 		}
 	}
 
-	temp_raws.map(raws =>{
-		raws.p = base_a>0 ? (raws.a-base_a)/base_a * 100 : raws.a
+	temp_raws.map(raws => {
+		raws.p = base_a > 0 ? (raws.a - base_a) / base_a * 100 : raws.a
 	})
 
-	Object.keys(compounds).map( binary =>
+	Object.keys(compounds).map(binary =>
 		(!Object.keys(compounds[binary]).length) &&
-			temp_raws.map( (temp_raw,i) =>
-				(temp_raw.latex === binary) &&
-					(temp_binaries_raws.push(temp_raw))
-				)
-		);
+		temp_raws.map((temp_raw, i) =>
+			(temp_raw.latex === binary) &&
+			(temp_binaries_raws.push(temp_raw))
+		)
+	);
 
-	let temp_compound_raws_temp = mode==='C2V' ? temp_compound_raws_C2V : temp_compound_raws;
-	for(let j in temp_compound_raws_temp){
-		let [direct, indirect] = [ [], [] ];
-		for(let k in temp_compound_raws_temp[j])
+	let temp_compound_raws_temp = mode === 'C2V' ? temp_compound_raws_C2V : temp_compound_raws;
+	for (let j in temp_compound_raws_temp) {
+		let [direct, indirect] = [[], []];
+		for (let k in temp_compound_raws_temp[j])
 			temp_compound_raws_temp[j][k].direct ? direct.push(temp_compound_raws_temp[j][k]) : indirect.push(temp_compound_raws_temp[j][k]);
 		direct.length && directs.push(direct);
 		indirect.length && directs.push(indirect);
@@ -125,10 +122,10 @@ const setGraphData = (mode, temp_compounds_checked, fraction, base_a) => {
 
 
 const flatten = function (ary) {
-    return ary.reduce(function (p, c) {
-      return Array.isArray(c) ? p.concat(flatten(c)) : p.concat(c);
-    }, []);
-  };
+	return ary.reduce(function (p, c) {
+		return Array.isArray(c) ? p.concat(flatten(c)) : p.concat(c);
+	}, []);
+};
 
 /*
 import axios from 'axios';
@@ -171,4 +168,4 @@ console.log('start');
 postData_wrapper(carr, carr.length, 3000).then(num => console.log(compounds_temp));
 */
 
-export {colors, xlabels, ylabels, compounds, setCompoundsData, compound_data, binaries_data, compounds_fractions, setGraphData}
+export { colors, xlabels, ylabels, compounds, compound_data, compounds_fractions, setGraphData }

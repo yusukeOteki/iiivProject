@@ -23,7 +23,7 @@ class App extends PureComponent {
       <MuiThemeProvider theme={myTheme}>
         <BrowserRouter>
           <div>
-            <Header />
+            {/* <Header /> */}
             <Route exact path='/' component={CompoundGraph} />
             <Route path='/about' component={About} />
             <Route path='/friends' component={Friends} />

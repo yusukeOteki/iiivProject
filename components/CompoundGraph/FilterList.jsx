@@ -1,9 +1,7 @@
 /*jshint esversion: 6 */
 import React from 'react';
 import isEqual from 'lodash/isEqual';
-
-import Filter from "./Filter";
-import GridPaper from './GridPaper';
+import {GridPaper, Filter} from ".";
 
 export default class FilterList extends React.Component {
 

@@ -2,11 +2,7 @@ import React from 'react';
 import isEqual from 'lodash/isEqual';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-
-import SettingAxis from './SettingAxis';
-import SettingBaseCompound from './SettingBaseCompound';
-import ZoomOutButton from './ZoomOutButton';
-import GridPaper from './GridPaper';
+import { GridPaper, SettingAxis, SettingBaseCompound,ZoomOutButton } from '.';
 
 const styles = theme => ({
   root: {

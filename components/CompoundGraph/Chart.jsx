@@ -2,7 +2,7 @@
 import React from 'react';
 import isEqual from 'lodash/isEqual';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, Label, LabelList, ReferenceLine, ReferenceArea, ResponsiveContainer } from 'recharts';
-import { colors, compounds } from './index';
+import { colors, compounds } from '.';
 
 // Chart Tag
 export default class SimpleScatterChart extends React.Component {

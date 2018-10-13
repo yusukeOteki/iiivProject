@@ -5,10 +5,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import 'rc-slider/assets/index.css';
-
-import { compounds } from '.';
-import GridPaper from './GridPaper';
-import CompoundItem from "./CompoundItem";
+import { GridPaper, CompoundItem, compounds } from '.';
 
 const styles = theme => ({
   root: {

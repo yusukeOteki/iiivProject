@@ -1,11 +1,12 @@
 /*jshint esversion: 6 */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import { Chart, CompoundList, FilterList, xlabels, ylabels, compounds, compound_data, compounds_fractions, applyFilter, setGraphData, getGraphRange } from './index';
 import Grid from '@material-ui/core/Grid';
-import SettingGraph from './SettingGraph'
-import GridPaper from './GridPaper';
+import { withStyles } from '@material-ui/core/styles';
+import { 
+  Chart, CompoundList, FilterList, SettingGraph, GridPaper, 
+  xlabels, ylabels, compounds, compound_data, compounds_fractions, applyFilter, setGraphData, getGraphRange 
+} from '.';
 
 const styles = theme => ({
   root: {

@@ -65,7 +65,7 @@ export default class SimpleScatterChart extends React.Component {
 	}
 
 	render() {
-		const { compound_raws, binaries_data, refAreaLeft, refAreaRight, drag, cursorPosition, left, right, bottom, top, xlabel, ylabel, zoom, _onchangeleft, _onchangeright, _getCursorPosition } = this.props;
+		const { compound_raws, binaries_data, refAreaLeft, refAreaRight, drag, cursorPosition, left, right, bottom, top, xlabel, ylabel, zoom, _onchangeleft, _onchangeright, _getCursorPosition, filter } = this.props;
 		return (
 			<ResponsiveContainer height={900 * 2 / 3} width="100%">
 				<ScatterChart margin={{top: 10, right: 10, bottom: 20, left: 10}}
@@ -83,13 +83,12 @@ export default class SimpleScatterChart extends React.Component {
 					</YAxis>
 					<ZAxis range={[50]} />
 					{Object.keys(compound_raws).map((compound, i) => {
-						//console.log(compound)
 						return (compound_raws[compound].length > 0) ?
 							<Scatter name='compounds_scatter' key={`compound-${i}`} data={compound_raws[compound]} fill={colors[Object.keys(compounds).indexOf(compound_raws[compound][0].compound)]} shape={compound_raws[compound][0].direct ? "circle" : "triangle"} onMouseUp={e => this._onchangelineheightonMarker(e)} /> : ''
 					})}
-					{Object.keys(binaries_data).map((binary, i) => {
+					{binaries_data.map((binary, i) => {
 						return (
-							<Scatter name='binaries_scatter' key={`binary-${i}`} data={binaries_data[binary]} shape={binaries_data[binary][0].direct ? "circle" : "triangle"} onMouseUp={e => this._onchangelineheightonMarker(e)} >
+							<Scatter name='binaries_scatter' key={`binary-${i}`} data={[binary]} shape={binary.direct ? "circle" : "triangle"} onMouseUp={e => this._onchangelineheightonMarker(e)} >
 								<LabelList dataKey='latex' position='top' />
 							</Scatter>
 						)

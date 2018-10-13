@@ -11,6 +11,7 @@ import Input from '@material-ui/core/Input';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import ContainedButtons from './ContainedButtons';
 
 const styles = theme => ({
   container: {
@@ -114,9 +115,11 @@ class SettingBaseCompound extends React.Component {
 
     return (
       <div>
-        <Button style={{"textTransform": 'none'}} onClick={this.handleClickOpen}>
+      <FormControl className={classes.formControl}>
+        <Button variant="contained" style={{"textTransform": 'none'}} onClick={this.handleClickOpen}>
           Base Compound: {this.state.compound}
         </Button>
+      </FormControl>
         <Dialog
           disableBackdropClick
           disableEscapeKeyDown

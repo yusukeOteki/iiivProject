@@ -101,14 +101,14 @@ const setGraphData = (mode, temp_compounds_checked, fraction, base_a) => {
 	}
 
 	temp_raws.map(raws =>{
-		raws.p = base_a>0 ? (raws.a-base_a)/base_a : raws.a
+		raws.p = base_a>0 ? (raws.a-base_a)/base_a * 100 : raws.a
 	})
 
 	Object.keys(compounds).map( binary =>
 		(!Object.keys(compounds[binary]).length) &&
 			temp_raws.map( (temp_raw,i) =>
 				(temp_raw.latex === binary) &&
-					(temp_binaries_raws[binary+i] = [temp_raw])
+					(temp_binaries_raws.push(temp_raw))
 				)
 		);
 
@@ -120,7 +120,6 @@ const setGraphData = (mode, temp_compounds_checked, fraction, base_a) => {
 		direct.length && directs.push(direct);
 		indirect.length && directs.push(indirect);
 	}
-
 	return [temp_raws, directs, temp_binaries_raws];
 };
 
